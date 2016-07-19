@@ -2,6 +2,8 @@ package com.mirhoseini.trakttv.core.di.module;
 
 import com.mirhoseini.trakttv.core.Presentation.PopularMoviesPresenter;
 import com.mirhoseini.trakttv.core.Presentation.PopularMoviesPresenterImpl;
+import com.mirhoseini.trakttv.core.model.PopularMoviesInteractor;
+import com.mirhoseini.trakttv.core.model.PopularMoviesInteractorImpl;
 import com.mirhoseini.trakttv.core.view.PopularMoviesView;
 
 import dagger.Module;
@@ -22,6 +24,11 @@ public class PopularMoviesModule {
     @Provides
     public PopularMoviesView provideView() {
         return view;
+    }
+
+    @Provides
+    public PopularMoviesInteractor provideInteractor(PopularMoviesInteractorImpl interactor) {
+        return interactor;
     }
 
     @Provides

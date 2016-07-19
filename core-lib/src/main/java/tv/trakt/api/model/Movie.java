@@ -17,7 +17,7 @@ public class Movie {
     private String title;
     @SerializedName("year")
     @Expose
-    private Integer year;
+    private String year;
     @SerializedName("ids")
     @Expose
     private Ids ids;
@@ -72,11 +72,11 @@ public class Movie {
         this.title = title;
     }
 
-    public Integer getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(Integer year) {
+    public void setYear(String year) {
         this.year = year;
     }
 

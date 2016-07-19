@@ -8,6 +8,12 @@ import tv.trakt.api.model.Movie;
 
 public interface SearchMoviesView extends BaseView {
 
+    void showProgress();
+
+    void hideProgress();
+
     void setSearchedMoviesValue(Movie[] movies);
+
+    void showRetryMessage();
 
 }

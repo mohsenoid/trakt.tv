@@ -2,6 +2,8 @@ package com.mirhoseini.trakttv.core.di.module;
 
 import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenter;
 import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenterImpl;
+import com.mirhoseini.trakttv.core.model.SearchMoviesInteractor;
+import com.mirhoseini.trakttv.core.model.SearchMoviesInteractorImpl;
 import com.mirhoseini.trakttv.core.view.SearchMoviesView;
 
 import dagger.Module;
@@ -22,6 +24,11 @@ public class SearchMoviesModule {
     @Provides
     public SearchMoviesView provideView() {
         return view;
+    }
+
+    @Provides
+    public SearchMoviesInteractor provideInteractor(SearchMoviesInteractorImpl interactor) {
+        return interactor;
     }
 
     @Provides

@@ -8,6 +8,12 @@ import tv.trakt.api.model.Movie;
 
 public interface PopularMoviesView extends BaseView {
 
+    void showProgress();
+
+    void hideProgress();
+
     void setPopularMoviesValue(Movie[] movies);
+
+    void showRetryMessage();
 
 }

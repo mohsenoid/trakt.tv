@@ -6,18 +6,10 @@ package com.mirhoseini.trakttv.core.view;
 
 public interface BaseView {
 
-    void showProgress();
-
-    void hideProgress();
-
     void showMessage(String message);
-
-    void updateProgress(String newMessage);
 
     void showOfflineMessage();
 
     void showConnectionError();
-
-    void showRetryMessage();
 
 }

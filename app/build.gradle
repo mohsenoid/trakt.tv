@@ -23,13 +23,17 @@ android {
         }
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     // allow using java 8 lambda
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
 
-    // fixes espresso conflict with supportAnnotation new version
+    // fixes espresso conflict with supportAnnotation and androidSupport new versions
     configurations.all {
         resolutionStrategy {
             force rootProject.ext.testLibraries.supportAnnotations
@@ -62,6 +66,8 @@ dependencies {
     compile rootProject.ext.libraries.appSettings
     compile rootProject.ext.libraries.utils
 
+    compile rootProject.ext.libraries.picasso
+
     compile rootProject.ext.libraries.butterknife
     apt rootProject.ext.aptLibraries.butterknifeCompiler
 
@@ -70,7 +76,5 @@ dependencies {
 
     compile rootProject.ext.libraries.timber
 
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:recyclerview-v7:23.4.0'
 }
 

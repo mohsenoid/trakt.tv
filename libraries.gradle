@@ -1,10 +1,10 @@
 ext {
     minSdkVersion = 9
-    compileSdkVersion = 23
-    buildToolsVersion = "23.0.3"
+    compileSdkVersion = 24
+    buildToolsVersion = "24.0.0"
 
     //Android
-    androidSupportVersion = "23.3.0"
+    androidSupportVersion = "24.0.0"
     butterknifeVersion = "8.0.1"
     rxandroidVersion = "1.1.0"
     okhttpVersion = "3.2.0"
@@ -12,6 +12,7 @@ ext {
     appSettingsVersion = "1.0.1"
     utilsVersion = "1.0.0"
     timberVersion = "4.1.2"
+    picassoVersion = "2.5.2"
     daggerVersion = "2.4"
 
     //Java
@@ -43,6 +44,7 @@ ext {
             retrofit         : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
             retrofitConverter: "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
             retrofitAdapter  : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
+            picasso          : "com.squareup.picasso:picasso:${picassoVersion}",
             dagger           : "com.google.dagger:dagger:${daggerVersion}",
     ]
 
