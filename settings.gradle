@@ -1,0 +1,2 @@
+include ':trakt-app', ':core-lib'
+project(':trakt-app').projectDir = new File('app')
