@@ -21,6 +21,7 @@ import com.mirhoseini.trakttv.core.view.BaseView;
 import com.mirhoseini.trakttv.core.view.SearchMoviesView;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
+import com.mirhoseini.trakttv.util.ItemSpaceDecoration;
 import com.mirhoseini.trakttv.view.adapter.SearchMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
 
@@ -85,6 +86,9 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         ButterKnife.bind(this, view);
+
+        // add material margins to list items card view
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
 
         return view;
     }
@@ -189,6 +193,7 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
         if (null == adapter) {
             if (searchMovieResults.length == 0) {
                 noResultFound.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
             } else {
                 adapter = new SearchMoviesRecyclerViewAdapter(searchMovieResults, listener);
                 initRecyclerView();
@@ -202,6 +207,8 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     }
 
     private void initRecyclerView() {
+        recyclerView.setVisibility(View.VISIBLE);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

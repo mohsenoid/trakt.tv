@@ -21,6 +21,7 @@ import com.mirhoseini.trakttv.core.view.BaseView;
 import com.mirhoseini.trakttv.core.view.PopularMoviesView;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
+import com.mirhoseini.trakttv.util.ItemSpaceDecoration;
 import com.mirhoseini.trakttv.view.adapter.PopularMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
 
@@ -87,8 +88,13 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
 
         ButterKnife.bind(this, view);
 
+        // add material margins to list items card view
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
+
+        // allow pull to refresh on list
         swipeRefresh.setOnRefreshListener(this);
 
+        // load data for first run
         if (adapter == null)
             loadPopularMoviesData();
         else
