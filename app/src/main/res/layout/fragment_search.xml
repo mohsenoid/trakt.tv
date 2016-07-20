@@ -31,12 +31,19 @@
         android:text="@string/no_search_result"
         android:visibility="gone" />
 
-
     <ProgressBar
         android:id="@+id/progress_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:visibility="gone" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/no_internet"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_no_internet" />
 
 </FrameLayout>

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 import tv.trakt.api.model.Movie;
 
@@ -53,6 +54,12 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     ProgressBar progressMore;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
+
+    @OnClick(R.id.no_internet)
+    void onNoInternetClick(View view) {
+        loadPopularMoviesData();
+    }
+
 
     int page;
 
@@ -149,7 +156,9 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
             listener.showOfflineMessage();
         }
 
-        noInternet.setVisibility(View.VISIBLE);
+        if (null == adapter || adapter.getItemCount() == 0) {
+            noInternet.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

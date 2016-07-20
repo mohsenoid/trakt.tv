@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,12 +23,11 @@ import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
 import com.mirhoseini.trakttv.view.adapter.SearchMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
 
-import org.w3c.dom.Text;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 import tv.trakt.api.model.Movie;
 import tv.trakt.api.model.SearchMovieResult;
@@ -46,12 +46,19 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
 
     @BindView(R.id.list)
     RecyclerView recyclerView;
+    @BindView(R.id.no_internet)
+    ImageView noInternet;
     @BindView(R.id.progress)
     ProgressBar progress;
     @BindView(R.id.progress_more)
     ProgressBar progressMore;
     @BindView(R.id.no_result_found)
     TextView noResultFound;
+
+    @OnClick(R.id.no_internet)
+    void onNoInternetClick(View view) {
+        searchMovies();
+    }
 
     int page;
     String query;
@@ -119,6 +126,7 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
         }
 
         noResultFound.setVisibility(View.GONE);
+        noInternet.setVisibility(View.GONE);
     }
 
     @Override
@@ -138,6 +146,11 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     public void showOfflineMessage() {
         if (null != listener) {
             listener.showOfflineMessage();
+        }
+
+        if (null == adapter || adapter.getItemCount()==0) {
+            noInternet.setVisibility(View.VISIBLE);
+            noResultFound.setVisibility(View.GONE);
         }
     }
 
@@ -173,7 +186,7 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     public void setSearchMoviesValue(SearchMovieResult[] searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
 
-        if(searchMovieResults.length==0)
+        if (searchMovieResults.length == 0)
             noResultFound.setVisibility(View.VISIBLE);
 
         if (null == adapter) {
