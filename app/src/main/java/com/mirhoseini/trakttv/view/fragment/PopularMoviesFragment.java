@@ -42,7 +42,7 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     @Inject
     Context context;
     @Inject
-    PopularMoviesPresenter presenter;
+    public PopularMoviesPresenter presenter;
 
     @BindView(R.id.list)
     RecyclerView recyclerView;

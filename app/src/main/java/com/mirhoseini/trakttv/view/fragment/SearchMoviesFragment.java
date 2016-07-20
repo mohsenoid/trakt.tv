@@ -42,7 +42,7 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     @Inject
     Context context;
     @Inject
-    SearchMoviesPresenter presenter;
+    public SearchMoviesPresenter presenter;
 
     @BindView(R.id.list)
     RecyclerView recyclerView;
@@ -148,7 +148,7 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
             listener.showOfflineMessage();
         }
 
-        if (null == adapter || adapter.getItemCount()==0) {
+        if (null == adapter || adapter.getItemCount() == 0) {
             noInternet.setVisibility(View.VISIBLE);
             noResultFound.setVisibility(View.GONE);
         }

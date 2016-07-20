@@ -52,7 +52,10 @@ dependencies {
     testCompile rootProject.ext.testLibraries.junit
     testCompile rootProject.ext.testLibraries.robolectric
 
+    androidTestCompile rootProject.ext.testLibraries.supportTestRunner
+    androidTestCompile rootProject.ext.testLibraries.supportAnnotations
     androidTestCompile rootProject.ext.testLibraries.espresso
+    androidTestCompile rootProject.ext.testLibraries.espressoContrib
 
     compile rootProject.ext.libraries.appCompat
     compile rootProject.ext.libraries.androidSupport
@@ -63,7 +66,6 @@ dependencies {
 
     compile rootProject.ext.libraries.rxandroid
 
-    compile rootProject.ext.libraries.appSettings
     compile rootProject.ext.libraries.utils
 
     compile rootProject.ext.libraries.picasso
