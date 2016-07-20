@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.core.Presentation.PopularMoviesPresenter;
 import com.mirhoseini.trakttv.core.di.module.PopularMoviesModule;
+import com.mirhoseini.trakttv.core.util.Constants;
 import com.mirhoseini.trakttv.core.view.BaseView;
 import com.mirhoseini.trakttv.core.view.PopularMoviesView;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
@@ -37,7 +38,6 @@ import tv.trakt.api.model.Movie;
 
 public class PopularMoviesFragment extends BaseFragment implements PopularMoviesView, SwipeRefreshLayout.OnRefreshListener {
 
-    static final int LIMIT = 10;
 
     @Inject
     Context context;
@@ -181,12 +181,12 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     private void loadPopularMoviesData() {
         page = 1;
         adapter = null;
-        presenter.loadPopularMoviesData(Utils.isConnected(context), page, LIMIT);
+        presenter.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
     }
 
     private void loadMorePopularMoviesData(int newPage) {
         page = newPage;
-        presenter.loadPopularMoviesData(Utils.isConnected(context), page, LIMIT);
+        presenter.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
     }
 
     @Override

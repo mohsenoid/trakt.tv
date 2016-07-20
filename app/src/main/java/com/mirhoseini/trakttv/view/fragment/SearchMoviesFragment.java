@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenter;
 import com.mirhoseini.trakttv.core.di.module.SearchMoviesModule;
+import com.mirhoseini.trakttv.core.util.Constants;
 import com.mirhoseini.trakttv.core.view.BaseView;
 import com.mirhoseini.trakttv.core.view.SearchMoviesView;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
@@ -37,7 +38,6 @@ import tv.trakt.api.model.SearchMovieResult;
  */
 
 public class SearchMoviesFragment extends BaseFragment implements SearchMoviesView {
-    static final int LIMIT = 10;
 
     @Inject
     Context context;
@@ -174,12 +174,12 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     private void searchMovies() {
         page = 1;
         adapter = null;
-        presenter.searchMovies(Utils.isConnected(context), query, page, LIMIT);
+        presenter.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
     }
 
     private void searchMoreMovies(int newPage) {
         page = newPage;
-        presenter.searchMovies(Utils.isConnected(context), query, page, LIMIT);
+        presenter.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
     }
 
     @Override
