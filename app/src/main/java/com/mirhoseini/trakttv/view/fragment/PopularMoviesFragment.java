@@ -50,10 +50,8 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     ProgressBar progressMore;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
-
-    private OnListFragmentInteractionListener listener;
-
     int page;
+    private OnListFragmentInteractionListener listener;
     private PopularMoviesRecyclerViewAdapter adapter;
 
     public PopularMoviesFragment() {

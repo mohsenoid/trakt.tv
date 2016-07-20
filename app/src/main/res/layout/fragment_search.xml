@@ -4,34 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment">
+    android:background="@color/gray"
+    tools:context="com.mirhoseini.trakttv.view.fragment.SearchMoviesFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_movie" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_movie" />
 
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/progress_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal" />
+        android:layout_gravity="bottom|center_horizontal"
+        android:visibility="gone" />
 
 </FrameLayout>

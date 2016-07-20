@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,12 +27,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import tv.trakt.api.model.Movie;
+import tv.trakt.api.model.SearchMovieResult;
 
 /**
  * Created by Mohsen on 19/07/16.
  */
 
-public class SearchMoviesFragment extends BaseFragment implements SearchMoviesView, SwipeRefreshLayout.OnRefreshListener {
+public class SearchMoviesFragment extends BaseFragment implements SearchMoviesView {
     static final int LIMIT = 10;
 
     @Inject
@@ -47,15 +47,10 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     ProgressBar progress;
     @BindView(R.id.progress_more)
     ProgressBar progressMore;
-    @BindView(R.id.swipe_refresh)
-    SwipeRefreshLayout swipeRefresh;
-
-    private OnListFragmentInteractionListener listener;
-
     int page;
-    private SearchMoviesRecyclerViewAdapter adapter;
-
     String query;
+    private OnListFragmentInteractionListener listener;
+    private SearchMoviesRecyclerViewAdapter adapter;
 
     public SearchMoviesFragment() {
     }
@@ -77,8 +72,6 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         ButterKnife.bind(this, view);
-
-        swipeRefresh.setOnRefreshListener(this);
 
         return view;
     }
@@ -115,7 +108,6 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     public void showProgress() {
         if (page == 1) {
             progress.setVisibility(View.VISIBLE);
-            swipeRefresh.setRefreshing(true);
         } else {
             progressMore.setVisibility(View.VISIBLE);
         }
@@ -125,7 +117,6 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     @Override
     public void hideProgress() {
         progress.setVisibility(View.GONE);
-        swipeRefresh.setRefreshing(false);
         progressMore.setVisibility(View.GONE);
     }
 
@@ -172,14 +163,14 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     }
 
     @Override
-    public void setSearchMoviesValue(Movie[] movies) {
+    public void setSearchMoviesValue(SearchMovieResult[] searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
 
         if (null == adapter) {
-            adapter = new SearchMoviesRecyclerViewAdapter(movies, listener);
+            adapter = new SearchMoviesRecyclerViewAdapter(searchMovieResults, listener);
             initRecyclerView();
         } else {
-            adapter.addMoreMovies(movies);
+            adapter.addMoreMovies(searchMovieResults);
             adapter.notifyDataSetChanged();
         }
 
@@ -198,11 +189,6 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
                 searchMoreMovies(page + 1);
             }
         });
-    }
-
-    @Override
-    public void onRefresh() {
-        searchMovies();
     }
 
     public void updateQuery(String query) {

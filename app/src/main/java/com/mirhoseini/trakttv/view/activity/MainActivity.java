@@ -3,7 +3,6 @@ package com.mirhoseini.trakttv.view.activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -50,11 +49,9 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     Toolbar toolbar;
     @BindView(R.id.search_movies_fragment)
     ViewGroup searchContainer;
-
+    AlertDialog internetConnectionDialog;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
-
-    AlertDialog internetConnectionDialog;
     private PopularMoviesFragment popularMoviesFragment;
     private SearchMoviesFragment searchMoviesFragment;
 
@@ -95,7 +92,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
             createFragments();
         }
 
-        showFragments();
+        showPopularMoviesFragments();
 
         Timber.d("Activity Resumed");
     }
@@ -108,7 +105,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         searchMoviesFragment.setRetainInstance(true);
     }
 
-    private void showFragments() {
+    private void showPopularMoviesFragments() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.popular_movies_fragment, popularMoviesFragment, TAG_POPULAR_MOVIES_FRAGMENT);
         fragmentTransaction.replace(R.id.search_movies_fragment, searchMoviesFragment, TAG_SEARCH_MOVIES_FRAGMENT);
@@ -140,6 +137,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     Timber.i("onQueryTextChange: %s", newText);
+
                     searchMoviesFragment.updateQuery(newText);
                     return true;
                 }
@@ -147,26 +145,32 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     Timber.i("onQueryTextSubmit: %s", query);
+
                     searchMoviesFragment.updateQuery(query);
                     return true;
                 }
             };
             searchView.setOnQueryTextListener(queryTextListener);
+
+            searchView.setOnSearchClickListener(view -> showSearchFragment());
+
+            searchView.setOnCloseListener(() -> {
+                hideSearchFragment();
+                return false;
+            });
+
         }
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                searchContainer.setVisibility(View.VISIBLE);
-                return false;
-            default:
-                break;
-        }
+    private void hideSearchFragment() {
+        searchContainer.setVisibility(View.GONE);
+    }
 
-        return super.onOptionsItemSelected(item);
+    private void showSearchFragment() {
+        searchContainer.setVisibility(View.VISIBLE);
+        //clear previous search results
+        searchMoviesFragment.updateQuery("");
     }
 
     @Override

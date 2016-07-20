@@ -14,12 +14,10 @@ import rx.subscriptions.Subscriptions;
 
 public class PopularMoviesPresenterImpl implements PopularMoviesPresenter {
 
-    private PopularMoviesView view;
-
-    private Subscription subscription = Subscriptions.empty();
-
     @Inject
     PopularMoviesInteractor interactor;
+    private PopularMoviesView view;
+    private Subscription subscription = Subscriptions.empty();
 
     @Inject
     public PopularMoviesPresenterImpl() {

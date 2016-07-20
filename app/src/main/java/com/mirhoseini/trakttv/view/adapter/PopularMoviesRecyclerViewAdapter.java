@@ -68,10 +68,8 @@ public class PopularMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Popul
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View view;
-
-        private ViewDataBinding binding;
-
         Movie movie;
+        private ViewDataBinding binding;
 
         public ViewHolder(View view) {
             super(view);

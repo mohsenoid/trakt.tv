@@ -8,6 +8,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Query;
 import rx.Observable;
 import tv.trakt.api.model.Movie;
+import tv.trakt.api.model.SearchMovieResult;
 
 /**
  * Created by Mohsen on 19/07/16.
@@ -25,12 +26,12 @@ public interface TraktApi {
     Observable<Movie[]> getPopularMovies(@Query("page") int page, @Query("limit") int limit, @Query("extended") String extended);
 
     // https://api.trakt.tv/search/movie?query=tron&page=1&limit=10&extended=full,images
-    @GET("searchMovies/movie")
+    @GET("search/movie")
     @Headers({
             "Content-Type:" + Constants.API_CONTENT_TYPE_JSON,
             "trakt-api-version:" + Constants.API_VERSION_2,
             "trakt-api-key:" + Constants.API_KEY,
     })
-    Observable<Movie[]> searchMovies(@Query("query") String query, @Query("page") int page, @Query("limit") int limit, @Query("extended") String extended);
+    Observable<SearchMovieResult[]> searchMovies(@Query("query") String query, @Query("page") int page, @Query("limit") int limit, @Query("extended") String extended);
 
 }

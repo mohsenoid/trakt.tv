@@ -22,6 +22,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 @Module
 public class ClientModule {
+    private static final String CACHE_CONTROL = "Cache-Control";
+
     @Singleton
     @Provides
     public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor,
@@ -66,8 +68,6 @@ public class ClientModule {
 
         return cache;
     }
-
-    private static final String CACHE_CONTROL = "Cache-Control";
 
     @Singleton
     @Provides

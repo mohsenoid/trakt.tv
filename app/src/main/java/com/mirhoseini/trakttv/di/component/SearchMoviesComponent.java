@@ -1,7 +1,7 @@
 package com.mirhoseini.trakttv.di.component;
 
-import com.mirhoseini.trakttv.core.di.scope.SearchMoviesScope;
 import com.mirhoseini.trakttv.core.di.module.SearchMoviesModule;
+import com.mirhoseini.trakttv.core.di.scope.SearchMoviesScope;
 import com.mirhoseini.trakttv.view.fragment.SearchMoviesFragment;
 
 import dagger.Subcomponent;

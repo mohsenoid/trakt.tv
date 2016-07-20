@@ -8,7 +8,7 @@ public class Constants {
 
     public static final String BASE_URL = "https://api.trakt.tv/";
 
-    public static final String API_CONTENT_TYPE_JSON ="application/json";
+    public static final String API_CONTENT_TYPE_JSON = "application/json";
     public static final String API_VERSION_2 = "2";
     public static final String API_KEY = "ad005b8c117cdeee58a1bdb7089ea31386cd489b21e14b19818c91511f12a086";
     public static final String API_EXTENDED_FULL_IMAGES = "full,images";
@@ -18,4 +18,5 @@ public class Constants {
     public static final int CACHE_MAX_AGE = 2; // 2 min
     public static final int CACHE_MAX_STALE = 7; // 7 day
 
+    public static final long DELAY_BEFORE_START_SEARCH = 1; // 2 sec
 }

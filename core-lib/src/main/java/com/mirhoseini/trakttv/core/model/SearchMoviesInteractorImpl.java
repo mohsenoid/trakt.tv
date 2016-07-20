@@ -6,12 +6,14 @@ import com.mirhoseini.trakttv.core.service.TraktApi;
 import com.mirhoseini.trakttv.core.util.Constants;
 import com.mirhoseini.trakttv.core.util.SchedulerProvider;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.subjects.ReplaySubject;
-import tv.trakt.api.model.Movie;
+import tv.trakt.api.model.SearchMovieResult;
 
 /**
  * Created by Mohsen on 19/07/16.
@@ -22,7 +24,7 @@ public class SearchMoviesInteractorImpl implements SearchMoviesInteractor {
     private TraktApi api;
     private SchedulerProvider scheduler;
 
-    private ReplaySubject<Movie[]> moviesDataSubject;
+    private ReplaySubject<SearchMovieResult[]> moviesDataSubject;
     private Subscription moviesSubscription;
 
     @Inject
@@ -33,15 +35,20 @@ public class SearchMoviesInteractorImpl implements SearchMoviesInteractor {
 
 
     @Override
-    public Observable<Movie[]> searchMovies(String query, int page, int limit) {
-        if (moviesSubscription == null || moviesSubscription.isUnsubscribed()) {
-            moviesDataSubject = ReplaySubject.create();
+    public Observable<SearchMovieResult[]> searchMovies(String query, int page, int limit) {
 
-            moviesSubscription = api.searchMovies(query, page, limit, Constants.API_EXTENDED_FULL_IMAGES)
-                    .subscribeOn(scheduler.backgroundThread())
-                    .observeOn(scheduler.mainThread())
-                    .subscribe(moviesDataSubject);
-        }
+        if (moviesSubscription != null && !moviesSubscription.isUnsubscribed())
+            moviesSubscription.unsubscribe();
+
+//        if (moviesSubscription == null || moviesSubscription.isUnsubscribed()) {
+        moviesDataSubject = ReplaySubject.create();
+
+        moviesSubscription = api.searchMovies(query, page, limit, Constants.API_EXTENDED_FULL_IMAGES)
+                .delaySubscription(Constants.DELAY_BEFORE_START_SEARCH, TimeUnit.SECONDS)
+                .subscribeOn(scheduler.backgroundThread())
+                .observeOn(scheduler.mainThread())
+                .subscribe(moviesDataSubject);
+//        }
 
         return moviesDataSubject.asObservable();
 

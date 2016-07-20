@@ -12,9 +12,13 @@ import com.squareup.picasso.Picasso;
 public class CustomBindingAdapter {
     @BindingAdapter("bind:imageUrl")
     public static void loadImage(ImageView imageView, String url) {
-        Picasso.with(imageView.getContext())
-                .load(url)
-                .error(R.drawable.default_image)
-                .into(imageView);
+        if (null == url) {
+            imageView.setImageResource(R.drawable.default_image);
+        } else {
+            Picasso.with(imageView.getContext())
+                    .load(url)
+                    .error(R.drawable.default_image)
+                    .into(imageView);
+        }
     }
 }

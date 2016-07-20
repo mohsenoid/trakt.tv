@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.mirhoseini.trakttv.BR;
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment;
 import com.mirhoseini.trakttv.view.fragment.SearchMoviesFragment;
 
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import tv.trakt.api.model.Movie;
+import tv.trakt.api.model.SearchMovieResult;
 
 /**
  * Created by Mohsen on 19/07/16.
@@ -24,11 +24,11 @@ import tv.trakt.api.model.Movie;
 
 public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<SearchMoviesRecyclerViewAdapter.ViewHolder> {
 
-    private final ArrayList<Movie> movies;
+    private final ArrayList<SearchMovieResult> searchMovieResults;
     private final SearchMoviesFragment.OnListFragmentInteractionListener listener;
 
-    public SearchMoviesRecyclerViewAdapter(Movie[] movies, SearchMoviesFragment.OnListFragmentInteractionListener listener) {
-        this.movies = new ArrayList<>(Arrays.asList(movies));
+    public SearchMoviesRecyclerViewAdapter(SearchMovieResult[] searchMovieResults, SearchMoviesFragment.OnListFragmentInteractionListener listener) {
+        this.searchMovieResults = new ArrayList<>(Arrays.asList(searchMovieResults));
         this.listener = listener;
     }
 
@@ -42,7 +42,7 @@ public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Search
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        final Movie movie = movies.get(position);
+        final Movie movie = searchMovieResults.get(position).getMovie();
 
         holder.movie = movie;
         holder.getBinding().setVariable(BR.movie, movie);
@@ -59,20 +59,18 @@ public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Search
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        return searchMovieResults.size();
     }
 
-    public void addMoreMovies(Movie[] movies) {
-        this.movies.addAll(new ArrayList<>(Arrays.asList(movies)));
+    public void addMoreMovies(SearchMovieResult[] searchMovieResults) {
+        this.searchMovieResults.addAll(new ArrayList<>(Arrays.asList(searchMovieResults)));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View view;
-
-        private ViewDataBinding binding;
-
         Movie movie;
+        private ViewDataBinding binding;
 
         public ViewHolder(View view) {
             super(view);
