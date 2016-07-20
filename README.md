@@ -73,4 +73,8 @@ Some minor Android common functions are managed using [AndroidUtils](https://git
 
 Whole projects Dependencies are placed in "libraries.gradle" to avoid version conflicts and redundant in different modules.
 
+Used new DataBinding library contributed by Google in Adapters for faster development, and added CustomBindingAdapter to handle downloading and caching images using Picasso library.
+
+The endless list is being handled using EndlessRecyclerViewScrollListener which wait for the end of the list and trigger the next page api call.
+
 Used new SupportVector library in some icons cases for a better UI.
