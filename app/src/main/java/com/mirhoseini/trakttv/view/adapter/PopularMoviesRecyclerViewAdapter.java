@@ -77,8 +77,6 @@ public class PopularMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Popul
 
             binding = DataBindingUtil.bind(view);
 
-            ButterKnife.bind(this, view);
-
         }
 
         public ViewDataBinding getBinding() {

@@ -78,8 +78,6 @@ public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Search
 
             binding = DataBindingUtil.bind(view);
 
-            ButterKnife.bind(this, view);
-
         }
 
         public ViewDataBinding getBinding() {
