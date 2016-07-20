@@ -7,4 +7,7 @@ import com.mirhoseini.trakttv.core.view.SearchMoviesView;
  */
 
 public interface SearchMoviesPresenter extends BasePresenter<SearchMoviesView> {
+
+    void searchMovies(boolean isConnected, String query, int page, int limit);
+
 }

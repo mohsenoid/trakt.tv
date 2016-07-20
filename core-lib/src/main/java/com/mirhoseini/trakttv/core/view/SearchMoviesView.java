@@ -12,7 +12,7 @@ public interface SearchMoviesView extends BaseView {
 
     void hideProgress();
 
-    void setSearchedMoviesValue(Movie[] movies);
+    void setSearchMoviesValue(Movie[] movies);
 
     void showRetryMessage();
 

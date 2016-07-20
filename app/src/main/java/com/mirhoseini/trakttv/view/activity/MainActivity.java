@@ -3,20 +3,24 @@ package com.mirhoseini.trakttv.view.activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment;
+import com.mirhoseini.trakttv.view.fragment.SearchMoviesFragment;
 import com.mirhoseini.utils.Utils;
 
 import javax.inject.Inject;
@@ -30,9 +34,10 @@ import tv.trakt.api.model.Movie;
  * Created by Mohsen on 19/07/16.
  */
 
-public class MainActivity extends BaseActivity implements PopularMoviesFragment.OnListFragmentInteractionListener {
+public class MainActivity extends BaseActivity implements PopularMoviesFragment.OnListFragmentInteractionListener, SearchMoviesFragment.OnListFragmentInteractionListener {
 
     public static final String TAG_POPULAR_MOVIES_FRAGMENT = "popular_movies_fragment";
+    public static final String TAG_SEARCH_MOVIES_FRAGMENT = "search_movies_fragment";
 
     // injecting dependencies via Dagger
     @Inject
@@ -43,12 +48,16 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     // injecting views via ButterKnife
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.search_movies_fragment)
+    ViewGroup searchContainer;
 
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
 
     AlertDialog internetConnectionDialog;
     private PopularMoviesFragment popularMoviesFragment;
+    private SearchMoviesFragment searchMoviesFragment;
+
 
     @Override
     protected void injectDependencies(ApplicationComponent component) {
@@ -82,7 +91,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
         // If the Fragment is non-null, then it is currently being
         // retained across a configuration change.
-        if (popularMoviesFragment == null) {
+        if (null == popularMoviesFragment || null == searchMoviesFragment) {
             createFragments();
         }
 
@@ -94,26 +103,25 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     private void createFragments() {
         popularMoviesFragment = PopularMoviesFragment.newInstance();
         popularMoviesFragment.setRetainInstance(true);
+
+        searchMoviesFragment = SearchMoviesFragment.newInstance();
+        searchMoviesFragment.setRetainInstance(true);
     }
 
     private void showFragments() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.popular_movies_fragment, popularMoviesFragment, TAG_POPULAR_MOVIES_FRAGMENT);
+        fragmentTransaction.replace(R.id.search_movies_fragment, searchMoviesFragment, TAG_SEARCH_MOVIES_FRAGMENT);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
 
     @Override
     public void onListFragmentInteraction(Movie movie) {
-//        Intent movieIntent = MovieActivity.newIntent(context, movie);
-//        startActivity(movie);
-    }
+        /* Movie's full data can be loaded into another activity*/
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-//        presenter = null;
+//         Intent movieIntent = MovieActivity.newIntent(context, movie);
+//         startActivity(movie);
     }
 
     @Override
@@ -123,10 +131,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
         if (searchItem != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                // FIXME: 19/07/16 ???
-                searchView = (SearchView) searchItem.getActionView();
-            }
+            searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         }
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -135,14 +140,14 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     Timber.i("onQueryTextChange: %s", newText);
-
+                    searchMoviesFragment.updateQuery(newText);
                     return true;
                 }
 
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     Timber.i("onQueryTextSubmit: %s", query);
-
+                    searchMoviesFragment.updateQuery(query);
                     return true;
                 }
             };
@@ -155,12 +160,12 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                // FIXME: 19/07/16  Not implemented here
+                searchContainer.setVisibility(View.VISIBLE);
                 return false;
             default:
                 break;
         }
-        searchView.setOnQueryTextListener(queryTextListener);
+
         return super.onOptionsItemSelected(item);
     }
 
