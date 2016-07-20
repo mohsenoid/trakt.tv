@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenter;
@@ -20,6 +21,8 @@ import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
 import com.mirhoseini.trakttv.view.adapter.SearchMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
+
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -47,6 +50,9 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     ProgressBar progress;
     @BindView(R.id.progress_more)
     ProgressBar progressMore;
+    @BindView(R.id.no_result_found)
+    TextView noResultFound;
+
     int page;
     String query;
     private OnListFragmentInteractionListener listener;
@@ -112,6 +118,7 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
             progressMore.setVisibility(View.VISIBLE);
         }
 
+        noResultFound.setVisibility(View.GONE);
     }
 
     @Override
@@ -165,6 +172,9 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     @Override
     public void setSearchMoviesValue(SearchMovieResult[] searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
+
+        if(searchMovieResults.length==0)
+            noResultFound.setVisibility(View.VISIBLE);
 
         if (null == adapter) {
             adapter = new SearchMoviesRecyclerViewAdapter(searchMovieResults, listener);

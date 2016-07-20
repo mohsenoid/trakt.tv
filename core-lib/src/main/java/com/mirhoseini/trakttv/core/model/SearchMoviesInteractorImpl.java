@@ -40,15 +40,13 @@ public class SearchMoviesInteractorImpl implements SearchMoviesInteractor {
         if (moviesSubscription != null && !moviesSubscription.isUnsubscribed())
             moviesSubscription.unsubscribe();
 
-//        if (moviesSubscription == null || moviesSubscription.isUnsubscribed()) {
         moviesDataSubject = ReplaySubject.create();
 
         moviesSubscription = api.searchMovies(query, page, limit, Constants.API_EXTENDED_FULL_IMAGES)
-                .delaySubscription(Constants.DELAY_BEFORE_START_SEARCH, TimeUnit.SECONDS)
+                .delaySubscription(Constants.DELAY_BEFORE_SEARCH_STARTED, TimeUnit.SECONDS)
                 .subscribeOn(scheduler.backgroundThread())
                 .observeOn(scheduler.mainThread())
                 .subscribe(moviesDataSubject);
-//        }
 
         return moviesDataSubject.asObservable();
 
