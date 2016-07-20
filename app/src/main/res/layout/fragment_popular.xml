@@ -15,6 +15,8 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
             app:layoutManager="LinearLayoutManager"
             tools:listitem="@layout/item_movie" />
 
@@ -25,5 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
+
+    <ProgressBar
+        android:id="@+id/progress_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal" />
 
 </FrameLayout>

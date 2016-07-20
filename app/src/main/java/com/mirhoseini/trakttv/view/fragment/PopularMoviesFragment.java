@@ -18,6 +18,7 @@ import com.mirhoseini.trakttv.core.di.module.PopularMoviesModule;
 import com.mirhoseini.trakttv.core.view.BaseView;
 import com.mirhoseini.trakttv.core.view.PopularMoviesView;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
+import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
 import com.mirhoseini.trakttv.view.adapter.PopularMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
 
@@ -45,6 +46,8 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     RecyclerView recyclerView;
     @BindView(R.id.progress)
     ProgressBar progress;
+    @BindView(R.id.progress_more)
+    ProgressBar progressMore;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
 
@@ -75,7 +78,6 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         ButterKnife.bind(this, view);
 
         swipeRefresh.setOnRefreshListener(this);
-
 
         loadPopularMoviesData();
 
@@ -112,10 +114,12 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
 
     @Override
     public void showProgress() {
-        if (page == 1)
+        if (page == 1) {
             progress.setVisibility(View.VISIBLE);
-
-        swipeRefresh.setRefreshing(true);
+            swipeRefresh.setRefreshing(true);
+        } else {
+            progressMore.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -123,6 +127,7 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     public void hideProgress() {
         progress.setVisibility(View.GONE);
         swipeRefresh.setRefreshing(false);
+        progressMore.setVisibility(View.GONE);
     }
 
     @Override
@@ -162,23 +167,38 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         presenter.loadPopularMoviesData(Utils.isConnected(context), page, LIMIT);
     }
 
-    private void loadMorePopularMoviesData() {
-        page++;
+    private void loadMorePopularMoviesData(int newPage) {
+        page = newPage;
         presenter.loadPopularMoviesData(Utils.isConnected(context), page, LIMIT);
     }
 
     @Override
     public void setPopularMoviesValue(Movie[] movies) {
-        page++;
+        Timber.d("Loaded Page: %d", page);
 
         if (null == adapter) {
             adapter = new PopularMoviesRecyclerViewAdapter(movies, listener);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(adapter);
+            initRecyclerView();
         } else {
             adapter.addMoreMovies(movies);
             adapter.notifyDataSetChanged();
         }
+
+        page++;
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                Timber.d("Loading more movies, Page: %d", page + 1);
+
+                loadMorePopularMoviesData(page + 1);
+            }
+        });
     }
 
     @Override
