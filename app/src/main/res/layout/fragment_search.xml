@@ -23,6 +23,15 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/no_result_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_search_result"
+        android:visibility="gone" />
+
+
     <ProgressBar
         android:id="@+id/progress_more"
         android:layout_width="wrap_content"

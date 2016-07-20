@@ -3,8 +3,12 @@ package com.mirhoseini.trakttv.view.activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -50,10 +54,11 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     @BindView(R.id.search_movies_fragment)
     ViewGroup searchContainer;
     AlertDialog internetConnectionDialog;
-    private SearchView searchView = null;
-    private SearchView.OnQueryTextListener queryTextListener;
     private PopularMoviesFragment popularMoviesFragment;
     private SearchMoviesFragment searchMoviesFragment;
+    private SearchView searchView = null;
+    private MenuItem searchItem;
+    private boolean isSearchViewVisible;
 
 
     @Override
@@ -85,6 +90,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         popularMoviesFragment = (PopularMoviesFragment) fragmentManager.findFragmentByTag(TAG_POPULAR_MOVIES_FRAGMENT);
+        searchMoviesFragment = (SearchMoviesFragment) fragmentManager.findFragmentByTag(TAG_SEARCH_MOVIES_FRAGMENT);
+
 
         // If the Fragment is non-null, then it is currently being
         // retained across a configuration change.
@@ -92,7 +99,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
             createFragments();
         }
 
-        showPopularMoviesFragments();
+        attachFragments();
 
         Timber.d("Activity Resumed");
     }
@@ -105,7 +112,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         searchMoviesFragment.setRetainInstance(true);
     }
 
-    private void showPopularMoviesFragments() {
+    private void attachFragments() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.popular_movies_fragment, popularMoviesFragment, TAG_POPULAR_MOVIES_FRAGMENT);
         fragmentTransaction.replace(R.id.search_movies_fragment, searchMoviesFragment, TAG_SEARCH_MOVIES_FRAGMENT);
@@ -124,7 +131,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
         if (searchItem != null) {
@@ -133,7 +140,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-            queryTextListener = new SearchView.OnQueryTextListener() {
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     Timber.i("onQueryTextChange: %s", newText);
@@ -149,13 +156,12 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                     searchMoviesFragment.updateQuery(query);
                     return true;
                 }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);
+            });
 
-            searchView.setOnSearchClickListener(view -> showSearchFragment());
+            searchView.setOnSearchClickListener(view -> showSearch());
 
             searchView.setOnCloseListener(() -> {
-                hideSearchFragment();
+                hideSearch();
                 return false;
             });
 
@@ -163,14 +169,27 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         return true;
     }
 
-    private void hideSearchFragment() {
+    private void hideSearch() {
+        isSearchViewVisible = false;
+
         searchContainer.setVisibility(View.GONE);
     }
 
-    private void showSearchFragment() {
+    private void showSearch() {
+        isSearchViewVisible = true;
+
         searchContainer.setVisibility(View.VISIBLE);
         //clear previous search results
         searchMoviesFragment.updateQuery("");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -182,7 +201,15 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
     @Override
     public void showOfflineMessage() {
+        Timber.d("Showing Offline Message");
 
+        Snackbar.make(toolbar, R.string.offline_message, Snackbar.LENGTH_LONG)
+                .setAction(R.string.go_online, v -> {
+                    startActivity(new Intent(
+                            Settings.ACTION_WIFI_SETTINGS));
+                })
+                .setActionTextColor(Color.GREEN)
+                .show();
     }
 
     @Override

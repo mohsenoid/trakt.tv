@@ -5,4 +5,5 @@
     <string name="go_online">Go Online</string>
     <string name="retry_message">Network error, offline data!</string>
     <string name="load_retry">Retry</string>
+    <string name="no_search_result">No Result Found!</string>
 </resources>

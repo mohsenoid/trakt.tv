@@ -22,6 +22,14 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/no_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_no_internet" />
+
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"

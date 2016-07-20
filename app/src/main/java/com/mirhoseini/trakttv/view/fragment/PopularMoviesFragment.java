@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.mirhoseini.trakttv.R;
@@ -44,13 +45,17 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
 
     @BindView(R.id.list)
     RecyclerView recyclerView;
+    @BindView(R.id.no_internet)
+    ImageView noInternet;
     @BindView(R.id.progress)
     ProgressBar progress;
     @BindView(R.id.progress_more)
     ProgressBar progressMore;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
+
     int page;
+
     private OnListFragmentInteractionListener listener;
     private PopularMoviesRecyclerViewAdapter adapter;
 
@@ -77,11 +82,13 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
 
         swipeRefresh.setOnRefreshListener(this);
 
-        loadPopularMoviesData();
+        if (adapter == null)
+            loadPopularMoviesData();
+        else
+            initRecyclerView();
 
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -119,6 +126,7 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
             progressMore.setVisibility(View.VISIBLE);
         }
 
+        noInternet.setVisibility(View.GONE);
     }
 
     @Override
@@ -140,6 +148,8 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         if (null != listener) {
             listener.showOfflineMessage();
         }
+
+        noInternet.setVisibility(View.VISIBLE);
     }
 
     @Override
