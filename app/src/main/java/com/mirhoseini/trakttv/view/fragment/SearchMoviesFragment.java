@@ -186,12 +186,13 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     public void setSearchMoviesValue(SearchMovieResult[] searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
 
-        if (searchMovieResults.length == 0)
-            noResultFound.setVisibility(View.VISIBLE);
-
         if (null == adapter) {
-            adapter = new SearchMoviesRecyclerViewAdapter(searchMovieResults, listener);
-            initRecyclerView();
+            if (searchMovieResults.length == 0) {
+                noResultFound.setVisibility(View.VISIBLE);
+            } else {
+                adapter = new SearchMoviesRecyclerViewAdapter(searchMovieResults, listener);
+                initRecyclerView();
+            }
         } else {
             adapter.addMoreMovies(searchMovieResults);
             adapter.notifyDataSetChanged();
