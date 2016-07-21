@@ -42,7 +42,7 @@ public class SplashActivity extends BaseActivity {
                         wait(SPLASH_TIMEOUT);
                     }
                 } catch (InterruptedException ex) {
-                    Timber.e("Splash Interrupted", ex);
+                    Timber.e(ex, "Splash Interrupted");
                 }
 
                 finish();
