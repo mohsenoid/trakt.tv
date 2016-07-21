@@ -80,3 +80,5 @@ The endless list is being handled using EndlessRecyclerViewScrollListener which 
 The Android usual Log system is replaced with [Timber](https://github.com/JakeWharton/timber) contributed by Jake Wharton and avoid logging in release version.
 
 Used new SupportVector library in some icons cases for a better UI.
+
+Sample test cases are implemented by mockito, espresso, robolectric and mocking dagger.
