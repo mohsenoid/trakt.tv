@@ -1,11 +1,12 @@
-package com.mirhoseini.trakttv.view.fragment;
+package com.mirhoseini.trakttv.test.robolectric.view.fragment;
 
 import android.view.View;
 
 import com.mirhoseini.trakttv.BuildConfig;
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.support.ShadowSnackbar;
+import com.mirhoseini.trakttv.test.robolectric.support.ShadowSnackbar;
 import com.mirhoseini.trakttv.view.activity.MainActivity;
+import com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +15,10 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import static com.mirhoseini.trakttv.support.Assert.assertSnackbarIsShown;
-import static com.mirhoseini.trakttv.support.Assert.assertViewIsNotVisible;
-import static com.mirhoseini.trakttv.support.Assert.assertViewIsVisible;
-import static com.mirhoseini.trakttv.support.ViewLocator.getView;
+import static com.mirhoseini.trakttv.test.robolectric.support.Assert.assertSnackbarIsShown;
+import static com.mirhoseini.trakttv.test.robolectric.support.Assert.assertViewIsNotVisible;
+import static com.mirhoseini.trakttv.test.robolectric.support.Assert.assertViewIsVisible;
+import static com.mirhoseini.trakttv.test.robolectric.support.ViewLocator.getView;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 

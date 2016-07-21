@@ -1,4 +1,4 @@
-package com.mirhoseini.trakttv.support;
+package com.mirhoseini.trakttv.test.robolectric.support;
 
 import android.app.AlertDialog;
 import android.support.annotation.StringRes;
@@ -7,7 +7,7 @@ import android.view.View;
 
 import org.robolectric.shadows.ShadowAlertDialog;
 
-import static com.mirhoseini.trakttv.support.ResourceLocator.getString;
+import static com.mirhoseini.trakttv.test.robolectric.support.ResourceLocator.getString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
@@ -36,8 +36,8 @@ public class Assert {
         assertThat(shadowAlertDialog.getMessage().toString(), equalTo(getString(message)));
     }
 
-    public static void assertSnackbarIsShown(@StringRes int message){
-        Snackbar snackbar=ShadowSnackbar.getLatestSnackbar();
+    public static void assertSnackbarIsShown(@StringRes int message) {
+        Snackbar snackbar = ShadowSnackbar.getLatestSnackbar();
         ShadowSnackbar shadowSnackbar = ShadowSnackbar.shadowOf(snackbar);
         assertThat(shadowSnackbar.text, equalTo(getString(message)));
 

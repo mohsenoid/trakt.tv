@@ -11,14 +11,11 @@ import com.mirhoseini.trakttv.di.module.AndroidModule;
  */
 
 public abstract class TraktApplication extends Application {
+
     private static ApplicationComponent component;
 
     public static ApplicationComponent getComponent() {
         return component;
-    }
-
-    protected AndroidModule getAndroidModule() {
-        return new AndroidModule(this);
     }
 
     @Override
@@ -27,10 +24,14 @@ public abstract class TraktApplication extends Application {
 
         initApplication();
 
-        component = DaggerApplicationComponent.builder()
-                .androidModule(getAndroidModule())
+        component = createComponent();
+    }
+
+    public ApplicationComponent createComponent() {
+        return DaggerApplicationComponent.builder()
+                .androidModule(new AndroidModule(this))
                 .build();
     }
 
-    abstract void initApplication();
+    public abstract void initApplication();
 }

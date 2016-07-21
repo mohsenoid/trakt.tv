@@ -1,4 +1,4 @@
-package com.mirhoseini.trakttv.support;
+package com.mirhoseini.trakttv.test.robolectric.support;
 
 import android.app.Activity;
 import android.support.annotation.IdRes;

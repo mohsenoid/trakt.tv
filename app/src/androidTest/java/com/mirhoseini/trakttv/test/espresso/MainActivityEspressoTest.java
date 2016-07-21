@@ -1,4 +1,4 @@
-package com.mirhoseini.trakttv.view.activity;
+package com.mirhoseini.trakttv.test.espresso;
 
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.core.util.Constants;
+import com.mirhoseini.trakttv.view.activity.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class MainActivityTest {
+public class MainActivityEspressoTest {
 
     public static final String TEST = "Test";
 

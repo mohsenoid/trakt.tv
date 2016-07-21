@@ -24,7 +24,7 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    public TraktApi provideTracktApiService(Retrofit retrofit) {
+    public TraktApi provideTraktApiService(Retrofit retrofit) {
         return retrofit.create(TraktApi.class);
     }
 

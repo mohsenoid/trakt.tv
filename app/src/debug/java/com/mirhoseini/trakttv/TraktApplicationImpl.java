@@ -9,7 +9,7 @@ import timber.log.Timber;
 public class TraktApplicationImpl extends TraktApplication {
 
     @Override
-    void initApplication() {
+    public void initApplication() {
 
         //initialize Timber to log debug version
         Timber.plant(new Timber.DebugTree() {

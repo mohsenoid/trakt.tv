@@ -41,10 +41,9 @@ import tv.trakt.api.model.SearchMovieResult;
 public class SearchMoviesFragment extends BaseFragment implements SearchMoviesView {
 
     @Inject
-    Context context;
-    @Inject
     public SearchMoviesPresenter presenter;
-
+    @Inject
+    Context context;
     @BindView(R.id.list)
     RecyclerView recyclerView;
     @BindView(R.id.no_internet)
@@ -55,23 +54,21 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     ProgressBar progressMore;
     @BindView(R.id.no_result_found)
     TextView noResultFound;
-
-    @OnClick(R.id.no_internet)
-    void onNoInternetClick(View view) {
-        searchMovies();
-    }
-
     int page;
     String query;
     private OnListFragmentInteractionListener listener;
     private SearchMoviesRecyclerViewAdapter adapter;
-
     public SearchMoviesFragment() {
     }
 
     public static SearchMoviesFragment newInstance() {
         SearchMoviesFragment fragment = new SearchMoviesFragment();
         return fragment;
+    }
+
+    @OnClick(R.id.no_internet)
+    void onNoInternetClick(View view) {
+        searchMovies();
     }
 
     @Override

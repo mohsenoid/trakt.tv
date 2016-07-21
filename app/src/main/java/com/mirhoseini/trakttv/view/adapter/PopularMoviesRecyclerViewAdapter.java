@@ -14,7 +14,6 @@ import com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.ButterKnife;
 import tv.trakt.api.model.Movie;
 
 /**

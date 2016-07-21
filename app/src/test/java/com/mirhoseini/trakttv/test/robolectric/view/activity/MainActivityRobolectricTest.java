@@ -1,8 +1,9 @@
-package com.mirhoseini.trakttv.view.activity;
+package com.mirhoseini.trakttv.test.robolectric.view.activity;
 
 import com.mirhoseini.trakttv.BuildConfig;
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.support.ShadowSnackbar;
+import com.mirhoseini.trakttv.test.robolectric.support.ShadowSnackbar;
+import com.mirhoseini.trakttv.view.activity.MainActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
-import static com.mirhoseini.trakttv.support.Assert.assertAlertDialogIsShown;
+import static com.mirhoseini.trakttv.test.robolectric.support.Assert.assertAlertDialogIsShown;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -26,8 +27,8 @@ import static org.junit.Assert.assertNotNull;
 @Config(constants = BuildConfig.class, sdk = 21, shadows = {ShadowSnackbar.class})
 public class MainActivityRobolectricTest {
 
-    private MainActivity activity;
     final static String TEST_TEXT = "This is a test text.";
+    private MainActivity activity;
 
     @Before
     public void setUp() throws Exception {

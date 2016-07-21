@@ -1,6 +1,9 @@
-package com.mirhoseini.trakttv.core.model;
+package com.mirhoseini.trakttv.core.test.mockito.model;
 
+import com.mirhoseini.trakttv.core.model.SearchMoviesInteractor;
+import com.mirhoseini.trakttv.core.model.SearchMoviesInteractorImpl;
 import com.mirhoseini.trakttv.core.service.TraktApi;
+import com.mirhoseini.trakttv.core.util.Constants;
 import com.mirhoseini.trakttv.core.util.SchedulerProvider;
 
 import org.junit.Before;
@@ -26,13 +29,13 @@ public class SearchMoviesInteractorImplTest {
 
     SearchMoviesInteractor interactor;
     TraktApi api;
-    SchedulerProvider schedulerProvider;
+    SchedulerProvider scheduler;
     SearchMovieResult[] expectedResult;
 
     @Before
     public void setup() {
         api = mock(TraktApi.class);
-        schedulerProvider = mock(SchedulerProvider.class);
+        scheduler = mock(SchedulerProvider.class);
 
         Movie movie = new Movie();
         movie.setTitle("Test Movie");
@@ -43,13 +46,15 @@ public class SearchMoviesInteractorImplTest {
         expectedResult = new SearchMovieResult[1];
         expectedResult[0] = searchMovieResult;
 
-        when(schedulerProvider.mainThread()).thenReturn(Schedulers.immediate());
-        when(schedulerProvider.backgroundThread()).thenReturn(Schedulers.immediate());
+        when(scheduler.mainThread())
+                .thenReturn(Schedulers.immediate());
+        when(scheduler.backgroundThread())
+                .thenReturn(Schedulers.immediate());
 
         when(api.searchMovies(any(String.class), any(Integer.class), any(Integer.class), any(String.class)))
                 .thenReturn(Observable.just(expectedResult));
 
-        interactor = new SearchMoviesInteractorImpl(api, schedulerProvider);
+        interactor = new SearchMoviesInteractorImpl(api, scheduler);
     }
 
     @Test
@@ -57,6 +62,14 @@ public class SearchMoviesInteractorImplTest {
         TestSubscriber<SearchMovieResult[]> testSubscriber = new TestSubscriber<>();
         interactor.searchMovies("Test Query", 1, 10).subscribe(testSubscriber);
 
+        // search is waiting for more characters
+        testSubscriber.assertNoErrors();
+        testSubscriber.assertReceivedOnNext(Collections.emptyList());
+
+        // wait for search to start after a delay (in millis)
+        Thread.sleep((Constants.DELAY_BEFORE_SEARCH_STARTED + 1) * 1000);
+
+        // search is done
         testSubscriber.assertNoErrors();
         testSubscriber.assertReceivedOnNext(Collections.singletonList(expectedResult));
     }

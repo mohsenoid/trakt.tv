@@ -1,5 +1,7 @@
-package com.mirhoseini.trakttv.core.model;
+package com.mirhoseini.trakttv.core.test.mockito.model;
 
+import com.mirhoseini.trakttv.core.model.PopularMoviesInteractor;
+import com.mirhoseini.trakttv.core.model.PopularMoviesInteractorImpl;
 import com.mirhoseini.trakttv.core.service.TraktApi;
 import com.mirhoseini.trakttv.core.util.SchedulerProvider;
 
@@ -25,13 +27,13 @@ public class PopularMoviesInteractorImplTest {
 
     PopularMoviesInteractor interactor;
     TraktApi api;
-    SchedulerProvider schedulerProvider;
+    SchedulerProvider scheduler;
     Movie[] expectedResult;
 
     @Before
     public void setup() {
         api = mock(TraktApi.class);
-        schedulerProvider = mock(SchedulerProvider.class);
+        scheduler = mock(SchedulerProvider.class);
 
         Movie movie = new Movie();
         movie.setTitle("Test Movie");
@@ -39,13 +41,15 @@ public class PopularMoviesInteractorImplTest {
         expectedResult = new Movie[1];
         expectedResult[0] = movie;
 
-        when(schedulerProvider.mainThread()).thenReturn(Schedulers.immediate());
-        when(schedulerProvider.backgroundThread()).thenReturn(Schedulers.immediate());
+        when(scheduler.mainThread())
+                .thenReturn(Schedulers.immediate());
+        when(scheduler.backgroundThread())
+                .thenReturn(Schedulers.immediate());
 
         when(api.getPopularMovies(any(Integer.class), any(Integer.class), any(String.class)))
                 .thenReturn(Observable.just(expectedResult));
 
-        interactor = new PopularMoviesInteractorImpl(api, schedulerProvider);
+        interactor = new PopularMoviesInteractorImpl(api, scheduler);
     }
 
     @Test

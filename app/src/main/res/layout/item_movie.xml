@@ -28,10 +28,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/default_image"
-                app:imageUrl="@{movie.images.thumb.full}"
+                android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true" />
+                android:src="@drawable/default_image"
+                app:imageUrl="@{movie.images.thumb.full}" />
 
             <TextView
                 android:id="@+id/title"

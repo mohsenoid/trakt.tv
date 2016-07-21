@@ -41,10 +41,9 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
 
 
     @Inject
-    Context context;
-    @Inject
     public PopularMoviesPresenter presenter;
-
+    @Inject
+    Context context;
     @BindView(R.id.list)
     RecyclerView recyclerView;
     @BindView(R.id.no_internet)
@@ -55,24 +54,20 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     ProgressBar progressMore;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
-
-    @OnClick(R.id.no_internet)
-    void onNoInternetClick(View view) {
-        loadPopularMoviesData();
-    }
-
-
     int page;
-
     private OnListFragmentInteractionListener listener;
     private PopularMoviesRecyclerViewAdapter adapter;
-
     public PopularMoviesFragment() {
     }
 
     public static PopularMoviesFragment newInstance() {
         PopularMoviesFragment fragment = new PopularMoviesFragment();
         return fragment;
+    }
+
+    @OnClick(R.id.no_internet)
+    void onNoInternetClick(View view) {
+        loadPopularMoviesData();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.mirhoseini.trakttv.support;
+package com.mirhoseini.trakttv.test.robolectric.support;
 
 import android.support.annotation.StringRes;
 
