@@ -45,10 +45,10 @@ public class PopularMoviesFragmentRobolectricTest {
         fragment.showProgress();
 
         View progress = getView(fragment, R.id.progress);
-        assertViewIsVisible(progress);
+        assertViewIsNotVisible(progress);
 
         View progressMore = getView(fragment, R.id.progress_more);
-        assertViewIsNotVisible(progressMore);
+        assertViewIsVisible(progressMore);
 
         View noInternet = getView(fragment, R.id.no_internet);
         assertViewIsNotVisible(noInternet);
