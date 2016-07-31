@@ -16,7 +16,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.HttpUrl;
-import retrofit2.BaseUrl;
 
 /**
  * Created by Mohsen on 19/07/16.
@@ -40,8 +39,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public BaseUrl provideEndpoint() {
-        return () -> HttpUrl.parse(Constants.BASE_URL);
+    public HttpUrl provideEndpoint() {
+        return HttpUrl.parse(Constants.BASE_URL);
     }
 
     @Provides
