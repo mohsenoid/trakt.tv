@@ -20,7 +20,7 @@ public class PopularMoviesViewModelImpl implements PopularMoviesViewModel {
 
     private TraktApi api;
 
-    private BehaviorSubject<ArrayList<Movie>> subject = BehaviorSubject.create(new ArrayList<>());
+    private BehaviorSubject<ArrayList<Movie>> subject = BehaviorSubject.create();
     private BehaviorSubject<Boolean> isLoadingSubject = BehaviorSubject.create(false);
 
     @Inject
@@ -44,38 +44,18 @@ public class PopularMoviesViewModelImpl implements PopularMoviesViewModel {
                 .map(movies -> new ArrayList<>(Arrays.asList(movies)))
                 // Concatenate the new movies to the current posts list, then emit it via the subject
                 .doOnNext(moviesList -> {
-                    ArrayList fullList = new ArrayList(Arrays.asList(subject.getValue()));
+                    ArrayList fullList;
+
+                    if (page == 1)
+                        fullList = new ArrayList();
+                    else
+                        fullList = new ArrayList(subject.getValue());
+
                     fullList.addAll(moviesList);
                     subject.onNext(fullList);
                 })
+                .doOnError(throwable -> subject.onError(throwable))
                 .doOnTerminate(() -> isLoadingSubject.onNext(false));
-
-//        subscription = interactor.loadPopularMovies(page, limit).subscribe(movies ->
-//                {
-//                    if (null != view) {
-//                        view.hideProgress();
-//                        view.setPopularMoviesValue(movies);
-//
-//                        if (!isConnected)
-//                            view.showOfflineMessage();
-//                    }
-//                },
-//                throwable -> {
-//                    if (null != view) {
-//                        view.hideProgress();
-//                    }
-//
-//                    if (isConnected) {
-//                        if (null != view) {
-//                            view.showRetryMessage();
-//                        }
-//                    } else {
-//                        if (null != view) {
-//                            view.showOfflineMessage();
-//                        }
-//                    }
-//                });
-
     }
 
     @Override

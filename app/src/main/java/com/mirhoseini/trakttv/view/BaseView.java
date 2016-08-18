@@ -9,6 +9,6 @@ public interface BaseView {
 
     void showOfflineMessage();
 
-    void showConnectionError();
+    void showNetworkConnectionError();
 
 }

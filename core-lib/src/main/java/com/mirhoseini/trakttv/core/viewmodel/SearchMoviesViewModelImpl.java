@@ -20,7 +20,7 @@ public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
 
     private TraktApi api;
 
-    private BehaviorSubject<ArrayList<SearchMovieResult>> subject = BehaviorSubject.create(new ArrayList());
+    private BehaviorSubject<ArrayList<SearchMovieResult>> subject = BehaviorSubject.create();
     private BehaviorSubject<Boolean> isLoadingSubject = BehaviorSubject.create(false);
 
     @Inject
@@ -48,10 +48,17 @@ public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
                 .map(searchMovieResults -> new ArrayList<>(Arrays.asList(searchMovieResults)))
                 // Concatenate the new movies to the current posts list, then emit it via the subject
                 .doOnNext(searchMovieResultArrayList -> {
-                    ArrayList fullList = new ArrayList(Arrays.asList(subject.getValue()));
+                    ArrayList fullList;
+
+                    if (page == 1)
+                        fullList = new ArrayList();
+                    else
+                        fullList = new ArrayList(subject.getValue());
+
                     fullList.addAll(searchMovieResultArrayList);
                     subject.onNext(fullList);
                 })
+                .doOnError(throwable -> subject.onError(new Exception(throwable.toString())))
                 .doOnTerminate(() -> isLoadingSubject.onNext(false));
 
 //            subscription = interactor.searchMovies(query, page, limit).subscribe(searchResult ->

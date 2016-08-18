@@ -106,10 +106,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
     private void createFragments() {
         popularMoviesFragment = PopularMoviesFragment.newInstance();
-        popularMoviesFragment.setRetainInstance(true);
-
         searchMoviesFragment = SearchMoviesFragment.newInstance();
-        searchMoviesFragment.setRetainInstance(true);
     }
 
     private void attachFragments() {
@@ -211,11 +208,11 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     }
 
     @Override
-    public void showConnectionError() {
-        Timber.d("Showing Connection Error Message");
+    public void showNetworkConnectionError() {
+        Timber.d("Showing Network Connection Error Message");
 
         hideInternetConnectionError();
-        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, true);
+//        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, true);
     }
 
     public void hideInternetConnectionError() {

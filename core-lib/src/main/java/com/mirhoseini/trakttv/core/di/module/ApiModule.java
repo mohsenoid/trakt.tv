@@ -14,6 +14,7 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Mohsen on 19/07/16.
@@ -54,7 +55,7 @@ public class ApiModule {
     @Provides
     @Singleton
     public CallAdapter.Factory provideRxJavaCallAdapterFactory() {
-        return RxJavaCallAdapterFactory.create();
+        return RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
     }
 
 }
