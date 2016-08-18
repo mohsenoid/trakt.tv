@@ -32,8 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import tv.trakt.api.model.Movie;
@@ -61,7 +61,6 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
     SwipeRefreshLayout swipeRefresh;
 
     int page;
-
 
     private OnListFragmentInteractionListener listener;
     private PopularMoviesRecyclerViewAdapter adapter;
@@ -109,6 +108,11 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
 //        }
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private void initAdapter() {
@@ -161,7 +165,7 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
                 viewModel
                         .moviesObservable()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::setPopularMoviesValue, throwable -> showErrorMessage(throwable)),
+                        .subscribe(this::setPopularMoviesValue, this::showErrorMessage),
 
                 // Trigger next page load when RecyclerView is scrolled to the bottom
                 infiniteScrollObservable.subscribe(page -> loadMorePopularMoviesData(page))
@@ -252,7 +256,23 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
         subscriptions.add(
                 viewModel
                         .loadPopularMoviesDataObservable(page, Constants.PAGE_ROW_LIMIT)
-                        .subscribe()
+//                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<ArrayList<Movie>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+//                                showErrorMessage(e);
+                            }
+
+                            @Override
+                            public void onNext(ArrayList<Movie> movies) {
+
+                            }
+                        })
         );
     }
 

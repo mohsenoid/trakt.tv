@@ -212,7 +212,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         Timber.d("Showing Network Connection Error Message");
 
         hideInternetConnectionError();
-//        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, true);
+        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, true);
     }
 
     public void hideInternetConnectionError() {

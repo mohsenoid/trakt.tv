@@ -78,7 +78,7 @@ public class SearchMoviesFragment extends BaseFragment {
     }
 
     @OnClick(R.id.no_internet)
-    void onNoInternetClick(View view) {
+    void onNoInternetClick() {
         searchMovies();
     }
 
@@ -93,14 +93,22 @@ public class SearchMoviesFragment extends BaseFragment {
 
         ButterKnife.bind(this, view);
 
-        subscriptions = new CompositeSubscription();
+//        if (null == adapter)
+        initAdapter();
 
-        // add material margins to list items card view
-        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
+        initRecyclerView();
 
         initBindings();
 
+//        if (null == savedInstanceState) {
+        searchMovies();
+//        }
+
         return view;
+    }
+
+    private void initAdapter() {
+        adapter = new SearchMoviesRecyclerViewAdapter(listener);
     }
 
 
@@ -223,9 +231,7 @@ public class SearchMoviesFragment extends BaseFragment {
     }
 
     private void searchMovies() {
-        page = 1;
-        adapter = null;
-        viewModel.searchMoviesObservable(query, page, Constants.PAGE_ROW_LIMIT);
+        searchMoreMovies(1);
     }
 
     private void searchMoreMovies(int newPage) {
@@ -236,30 +242,30 @@ public class SearchMoviesFragment extends BaseFragment {
     public void setSearchMoviesValue(ArrayList<SearchMovieResult> searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
 
-        if (null == adapter) {
+
+        if (null != searchMovieResults) {
             if (searchMovieResults.size() == 0) {
                 noResultFound.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
             } else {
-                adapter = new SearchMoviesRecyclerViewAdapter(searchMovieResults, listener);
-                initRecyclerView();
+                adapter.setMovies(searchMovieResults);
+                adapter.notifyDataSetChanged();
             }
-        } else {
-            adapter.addMoreMovies(searchMovieResults);
-            adapter.notifyDataSetChanged();
         }
 
         if (!Utils.isConnected(context))
             showOfflineMessage();
 
         page++;
+
     }
 
     private void initRecyclerView() {
-        recyclerView.setVisibility(View.VISIBLE);
-
         layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
+
+        // add material margins to list items card view
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
         recyclerView.setAdapter(adapter);
     }
 

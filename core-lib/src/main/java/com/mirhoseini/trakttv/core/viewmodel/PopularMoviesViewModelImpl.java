@@ -54,7 +54,7 @@ public class PopularMoviesViewModelImpl implements PopularMoviesViewModel {
                     fullList.addAll(moviesList);
                     subject.onNext(fullList);
                 })
-                .doOnError(throwable -> subject.onError(throwable))
+                .doOnError(throwable -> subject.onError(new Throwable("Network error!")))
                 .doOnTerminate(() -> isLoadingSubject.onNext(false));
     }
 

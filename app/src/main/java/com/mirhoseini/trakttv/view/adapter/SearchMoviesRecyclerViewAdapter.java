@@ -22,11 +22,11 @@ import tv.trakt.api.model.SearchMovieResult;
 
 public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<SearchMoviesRecyclerViewAdapter.ViewHolder> {
 
-    private final ArrayList<SearchMovieResult> searchMovieResults;
     private final SearchMoviesFragment.OnListFragmentInteractionListener listener;
 
-    public SearchMoviesRecyclerViewAdapter(ArrayList<SearchMovieResult> searchMovieResults, SearchMoviesFragment.OnListFragmentInteractionListener listener) {
-        this.searchMovieResults = searchMovieResults;
+    private ArrayList<SearchMovieResult> searchMovieResults = new ArrayList<>();
+
+    public SearchMoviesRecyclerViewAdapter(SearchMoviesFragment.OnListFragmentInteractionListener listener) {
         this.listener = listener;
     }
 
@@ -60,9 +60,10 @@ public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Search
         return searchMovieResults.size();
     }
 
-    public void addMoreMovies(ArrayList<SearchMovieResult> searchMovieResults) {
-        this.searchMovieResults.addAll(searchMovieResults);
+    public void setMovies(ArrayList<SearchMovieResult> searchMovieResults) {
+        this.searchMovieResults = searchMovieResults;
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
