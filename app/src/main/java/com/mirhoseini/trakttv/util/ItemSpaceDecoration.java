@@ -20,7 +20,7 @@ public class ItemSpaceDecoration extends RecyclerView.ItemDecoration {
         outRect.right = space;
         outRect.bottom = space;
 
-        // Add top margin only for the first item to avoid double space between items
+        // Add top margin only for the first item to avoid double space at the beginning of the list
         if (parent.getChildLayoutPosition(view) == 0)
             outRect.top = space;
     }

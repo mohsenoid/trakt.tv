@@ -26,9 +26,9 @@ import dagger.Component;
 })
 public interface ApplicationComponent {
 
-    PopularMoviesComponent plus(PopularMoviesModule module);
+    PopularMoviesSubComponent plus(PopularMoviesModule module);
 
-    SearchMoviesComponent plus(SearchMoviesModule module);
+    SearchMoviesSubComponent plus(SearchMoviesModule module);
 
     void inject(SplashActivity activity);
 

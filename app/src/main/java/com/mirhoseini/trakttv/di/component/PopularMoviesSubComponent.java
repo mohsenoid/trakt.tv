@@ -14,7 +14,7 @@ import dagger.Subcomponent;
 @Subcomponent(modules = {
         PopularMoviesModule.class
 })
-public interface PopularMoviesComponent {
+public interface PopularMoviesSubComponent {
 
     void inject(PopularMoviesFragment fragment);
 
