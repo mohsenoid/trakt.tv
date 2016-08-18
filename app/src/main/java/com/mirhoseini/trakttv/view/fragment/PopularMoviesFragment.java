@@ -256,7 +256,6 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
         subscriptions.add(
                 viewModel
                         .loadPopularMoviesDataObservable(page, Constants.PAGE_ROW_LIMIT)
-//                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<ArrayList<Movie>>() {
                             @Override
                             public void onCompleted() {
