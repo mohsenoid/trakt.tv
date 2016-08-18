@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.mirhoseini.trakttv.BuildConfig;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.util.SchedulerProvider;
-import com.mirhoseini.trakttv.util.AppSchedulerProvider;
 import com.mirhoseini.utils.Utils;
 
 import java.io.File;
@@ -41,12 +39,6 @@ public class ApplicationModule {
     @Singleton
     public HttpUrl provideEndpoint() {
         return HttpUrl.parse(Constants.BASE_URL);
-    }
-
-    @Provides
-    @Singleton
-    public SchedulerProvider provideAppScheduler() {
-        return new AppSchedulerProvider();
     }
 
     @Provides

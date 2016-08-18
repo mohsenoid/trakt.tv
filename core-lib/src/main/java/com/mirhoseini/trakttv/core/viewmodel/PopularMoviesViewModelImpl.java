@@ -2,14 +2,14 @@ package com.mirhoseini.trakttv.core.viewmodel;
 
 import com.mirhoseini.trakttv.core.client.TraktApi;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.util.SchedulerProvider;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.subjects.BehaviorSubject;
-import rx.subjects.ReplaySubject;
 import tv.trakt.api.model.Movie;
 
 /**
@@ -19,32 +19,17 @@ import tv.trakt.api.model.Movie;
 public class PopularMoviesViewModelImpl implements PopularMoviesViewModel {
 
     private TraktApi api;
-    private SchedulerProvider scheduler;
 
-    private ReplaySubject<Movie[]> moviesDataSubject;
-    private Subscription moviesSubscription;
-
+    private BehaviorSubject<ArrayList<Movie>> subject = BehaviorSubject.create(new ArrayList<>());
     private BehaviorSubject<Boolean> isLoadingSubject = BehaviorSubject.create(false);
 
     @Inject
-    public PopularMoviesViewModelImpl(TraktApi api, SchedulerProvider scheduler) {
+    public PopularMoviesViewModelImpl(TraktApi api) {
         this.api = api;
-        this.scheduler = scheduler;
     }
 
-//    @Override
-//    public void destroy() {
-//        if (subscription != null && !subscription.isUnsubscribed())
-//            subscription.unsubscribe();
-//
-//        interactor.onDestroy();
-//
-//        view = null;
-//        interactor = null;
-//    }
-
     @Override
-    public Observable<Movie[]> loadPopularMoviesDataObservable(int page, int limit) {
+    public Observable<ArrayList<Movie>> loadPopularMoviesDataObservable(int page, int limit) {
 
         // Don't try and load if we're already loading
         if (isLoadingSubject.getValue()) {
@@ -54,17 +39,16 @@ public class PopularMoviesViewModelImpl implements PopularMoviesViewModel {
         //show loading progress
         isLoadingSubject.onNext(true);
 
-        if (moviesSubscription == null || moviesSubscription.isUnsubscribed()) {
-            moviesDataSubject = ReplaySubject.create();
-
-            moviesSubscription = api.getPopularMovies(page, limit, Constants.API_EXTENDED_FULL_IMAGES)
-                    .subscribeOn(scheduler.backgroundThread())
-                    .observeOn(scheduler.mainThread())
-                    .doOnTerminate(() -> isLoadingSubject.onNext(false))
-                    .subscribe(moviesDataSubject);
-        }
-
-        return moviesDataSubject.asObservable();
+        return api.getPopularMovies(page, limit, Constants.API_EXTENDED_FULL_IMAGES)
+                //convert Movies array to List
+                .map(movies -> new ArrayList<>(Arrays.asList(movies)))
+                // Concatenate the new movies to the current posts list, then emit it via the subject
+                .doOnNext(moviesList -> {
+                    ArrayList fullList = new ArrayList(Arrays.asList(subject.getValue()));
+                    fullList.addAll(moviesList);
+                    subject.onNext(fullList);
+                })
+                .doOnTerminate(() -> isLoadingSubject.onNext(false));
 
 //        subscription = interactor.loadPopularMovies(page, limit).subscribe(movies ->
 //                {
@@ -94,6 +78,12 @@ public class PopularMoviesViewModelImpl implements PopularMoviesViewModel {
 
     }
 
+    @Override
+    public Observable<ArrayList<Movie>> moviesObservable() {
+        return subject.asObservable();
+    }
+
+    @Override
     public Observable<Boolean> isLoadingObservable() {
         return isLoadingSubject.asObservable();
     }

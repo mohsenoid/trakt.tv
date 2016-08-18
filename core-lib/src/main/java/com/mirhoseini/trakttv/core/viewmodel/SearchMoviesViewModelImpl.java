@@ -2,16 +2,14 @@ package com.mirhoseini.trakttv.core.viewmodel;
 
 import com.mirhoseini.trakttv.core.client.TraktApi;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.util.SchedulerProvider;
 
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.subjects.BehaviorSubject;
-import rx.subjects.ReplaySubject;
 import tv.trakt.api.model.SearchMovieResult;
 
 /**
@@ -21,27 +19,17 @@ import tv.trakt.api.model.SearchMovieResult;
 public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
 
     private TraktApi api;
-    private SchedulerProvider scheduler;
 
-    private ReplaySubject<SearchMovieResult[]> moviesDataSubject;
-    private Subscription moviesSubscription;
-
+    private BehaviorSubject<ArrayList<SearchMovieResult>> subject = BehaviorSubject.create(new ArrayList());
     private BehaviorSubject<Boolean> isLoadingSubject = BehaviorSubject.create(false);
 
-
     @Inject
-    public SearchMoviesViewModelImpl(TraktApi api, SchedulerProvider scheduler) {
+    public SearchMoviesViewModelImpl(TraktApi api) {
         this.api = api;
-        this.scheduler = scheduler;
     }
 
-//    @Override
-//    public void destroy() {
-//        view = null;
-//    }
-
     @Override
-    public Observable<SearchMovieResult[]> searchMoviesObservable(String query, int page, int limit) {
+    public Observable<ArrayList<SearchMovieResult>> searchMoviesObservable(String query, int page, int limit) {
 
         // Don't try and load if we're already loading or query is empty
         if (isLoadingSubject.getValue() || query.isEmpty()) {
@@ -52,23 +40,19 @@ public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
         isLoadingSubject.onNext(true);
 
         // stop previous search
-        if (null != moviesSubscription && !moviesSubscription.isUnsubscribed())
-            moviesSubscription.unsubscribe();
+//        if (null != moviesSubscription && !moviesSubscription.isUnsubscribed())
+//            moviesSubscription.unsubscribe();
 
-        if (moviesSubscription != null && !moviesSubscription.isUnsubscribed())
-            moviesSubscription.unsubscribe();
-
-        moviesDataSubject = ReplaySubject.create();
-
-        moviesSubscription = api.searchMovies(query, page, limit, Constants.API_EXTENDED_FULL_IMAGES)
-                .delaySubscription(Constants.DELAY_BEFORE_SEARCH_STARTED, TimeUnit.SECONDS)
-                .subscribeOn(scheduler.backgroundThread())
-                .observeOn(scheduler.mainThread())
-                .doOnTerminate(() -> isLoadingSubject.onNext(false))
-                .subscribe(moviesDataSubject);
-
-        return moviesDataSubject.asObservable();
-
+        return api.searchMovies(query, page, limit, Constants.API_EXTENDED_FULL_IMAGES)
+                //convert Movies array to List
+                .map(searchMovieResults -> new ArrayList<>(Arrays.asList(searchMovieResults)))
+                // Concatenate the new movies to the current posts list, then emit it via the subject
+                .doOnNext(searchMovieResultArrayList -> {
+                    ArrayList fullList = new ArrayList(Arrays.asList(subject.getValue()));
+                    fullList.addAll(searchMovieResultArrayList);
+                    subject.onNext(fullList);
+                })
+                .doOnTerminate(() -> isLoadingSubject.onNext(false));
 
 //            subscription = interactor.searchMovies(query, page, limit).subscribe(searchResult ->
 //                    {
@@ -98,7 +82,14 @@ public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
 
     }
 
+    @Override
+    public Observable<ArrayList<SearchMovieResult>> moviesObservable() {
+        return subject.asObservable();
+    }
+
+    @Override
     public Observable<Boolean> isLoadingObservable() {
         return isLoadingSubject.asObservable();
     }
+
 }

@@ -75,7 +75,7 @@ public class PopularMoviesFragmentRobolectricTest {
 
     @Test
     public void testShowRetryMessage() throws Exception {
-        fragment.showRetryMessage();
+        fragment.showRetryMessage(new Throwable("Well known error!"));
 
         assertSnackbarIsShown(R.string.retry_message);
     }

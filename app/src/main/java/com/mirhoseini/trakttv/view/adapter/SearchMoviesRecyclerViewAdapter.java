@@ -12,7 +12,6 @@ import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.view.fragment.SearchMoviesFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import tv.trakt.api.model.Movie;
 import tv.trakt.api.model.SearchMovieResult;
@@ -26,8 +25,8 @@ public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Search
     private final ArrayList<SearchMovieResult> searchMovieResults;
     private final SearchMoviesFragment.OnListFragmentInteractionListener listener;
 
-    public SearchMoviesRecyclerViewAdapter(SearchMovieResult[] searchMovieResults, SearchMoviesFragment.OnListFragmentInteractionListener listener) {
-        this.searchMovieResults = new ArrayList<>(Arrays.asList(searchMovieResults));
+    public SearchMoviesRecyclerViewAdapter(ArrayList<SearchMovieResult> searchMovieResults, SearchMoviesFragment.OnListFragmentInteractionListener listener) {
+        this.searchMovieResults = searchMovieResults;
         this.listener = listener;
     }
 
@@ -61,8 +60,8 @@ public class SearchMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Search
         return searchMovieResults.size();
     }
 
-    public void addMoreMovies(SearchMovieResult[] searchMovieResults) {
-        this.searchMovieResults.addAll(new ArrayList<>(Arrays.asList(searchMovieResults)));
+    public void addMoreMovies(ArrayList<SearchMovieResult> searchMovieResults) {
+        this.searchMovieResults.addAll(searchMovieResults);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -23,4 +23,5 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void injectDependencies(ApplicationComponent component);
 
+    protected abstract void initBindings();
 }

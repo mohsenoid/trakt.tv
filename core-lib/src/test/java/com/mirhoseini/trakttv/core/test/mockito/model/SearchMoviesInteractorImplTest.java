@@ -4,7 +4,6 @@ import com.mirhoseini.trakttv.core.model.SearchMoviesInteractor;
 import com.mirhoseini.trakttv.core.model.SearchMoviesInteractorImpl;
 import com.mirhoseini.trakttv.core.client.TraktApi;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.util.SchedulerProvider;
 
 import org.junit.Before;
 import org.junit.Test;
