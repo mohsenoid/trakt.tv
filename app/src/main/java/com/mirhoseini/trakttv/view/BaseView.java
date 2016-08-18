@@ -1,9 +1,8 @@
-package com.mirhoseini.trakttv.core.view;
+package com.mirhoseini.trakttv.view;
 
 /**
- * Created by Mohsen on 19/07/16.
+ * Created by Mohsen on 18/08/16.
  */
-
 public interface BaseView {
 
     void showMessage(String message);

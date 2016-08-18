@@ -14,14 +14,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.core.Presentation.PopularMoviesPresenter;
+import com.mirhoseini.trakttv.core.viewmodel.PopularMoviesViewModel;
 import com.mirhoseini.trakttv.core.di.module.PopularMoviesModule;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.view.BaseView;
-import com.mirhoseini.trakttv.core.view.PopularMoviesView;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
 import com.mirhoseini.trakttv.util.ItemSpaceDecoration;
+import com.mirhoseini.trakttv.view.BaseView;
 import com.mirhoseini.trakttv.view.adapter.PopularMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
 
@@ -37,11 +36,11 @@ import tv.trakt.api.model.Movie;
  * Created by Mohsen on 19/07/16.
  */
 
-public class PopularMoviesFragment extends BaseFragment implements PopularMoviesView, SwipeRefreshLayout.OnRefreshListener {
+public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
     @Inject
-    public PopularMoviesPresenter presenter;
+    public PopularMoviesViewModel viewModel;
     @Inject
     Context context;
     @BindView(R.id.list)
@@ -101,18 +100,25 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnListFragmentInteractionListener) {
             listener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
+
+        initBindings();
+    }
+
+    private void initBindings() {
+
     }
 
     @Override
     protected void injectDependencies(ApplicationComponent component) {
         component
-                .plus(new PopularMoviesModule(this))
+                .plus(new PopularMoviesModule())
                 .inject(this);
     }
 
@@ -121,8 +127,8 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         super.onDetach();
         listener = null;
 
-        presenter.destroy();
-        presenter = null;
+        viewModel.destroy();
+        viewModel = null;
     }
 
     @Override
@@ -137,21 +143,18 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         noInternet.setVisibility(View.GONE);
     }
 
-    @Override
     public void hideProgress() {
         progress.setVisibility(View.GONE);
         swipeRefresh.setRefreshing(false);
         progressMore.setVisibility(View.GONE);
     }
 
-    @Override
     public void showMessage(String message) {
         if (null != listener) {
             listener.showMessage(message);
         }
     }
 
-    @Override
     public void showOfflineMessage() {
         if (null != listener) {
             listener.showOfflineMessage();
@@ -162,14 +165,12 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         }
     }
 
-    @Override
     public void showConnectionError() {
         if (null != listener) {
             listener.showConnectionError();
         }
     }
 
-    @Override
     public void showRetryMessage() {
         Timber.d("Showing Retry Message");
 
@@ -182,15 +183,14 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     private void loadPopularMoviesData() {
         page = 1;
         adapter = null;
-        presenter.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
+        viewModel.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
     }
 
     private void loadMorePopularMoviesData(int newPage) {
         page = newPage;
-        presenter.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
+        viewModel.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
     }
 
-    @Override
     public void setPopularMoviesValue(Movie[] movies) {
         Timber.d("Loaded Page: %d", page);
 

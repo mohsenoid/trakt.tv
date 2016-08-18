@@ -58,7 +58,6 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     private SearchMoviesFragment searchMoviesFragment;
     private SearchView searchView = null;
     private MenuItem searchItem;
-    private boolean isSearchViewVisible;
 
 
     @Override
@@ -69,6 +68,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         // inject views using ButterKnife
@@ -77,11 +77,14 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         setupToolbar();
 
         Timber.d("Main Activity Created");
+
     }
 
     private void setupToolbar() {
+
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.while_logo);
+
     }
 
     @Override
@@ -102,34 +105,42 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         attachFragments();
 
         Timber.d("Activity Resumed");
+
     }
 
     private void createFragments() {
+
         popularMoviesFragment = PopularMoviesFragment.newInstance();
         popularMoviesFragment.setRetainInstance(true);
 
         searchMoviesFragment = SearchMoviesFragment.newInstance();
         searchMoviesFragment.setRetainInstance(true);
+
     }
 
     private void attachFragments() {
+
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.popular_movies_fragment, popularMoviesFragment, TAG_POPULAR_MOVIES_FRAGMENT);
         fragmentTransaction.replace(R.id.search_movies_fragment, searchMoviesFragment, TAG_SEARCH_MOVIES_FRAGMENT);
         fragmentTransaction.commitAllowingStateLoss();
+
     }
 
 
     @Override
     public void onListFragmentInteraction(Movie movie) {
+
         /* Movie's full data can be loaded into another activity*/
 
 //         Intent movieIntent = MovieActivity.newIntent(context, movie);
 //         startActivity(movie);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
         searchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -137,6 +148,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         if (searchItem != null) {
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         }
+
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
@@ -166,41 +178,48 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
             });
 
         }
+
         return true;
+
     }
 
     private void hideSearch() {
-        isSearchViewVisible = false;
 
         searchContainer.setVisibility(View.GONE);
+
     }
 
     private void showSearch() {
-        isSearchViewVisible = true;
 
         searchContainer.setVisibility(View.VISIBLE);
         //clear previous search results
         searchMoviesFragment.updateQuery("");
+
     }
 
     @Override
     public void onBackPressed() {
+
         if (!searchView.isIconified()) {
             searchView.setIconified(true);
         } else {
             super.onBackPressed();
         }
+
     }
 
     @Override
     public void showMessage(String message) {
+
         Timber.d("Showing Message: %s", message);
 
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+
     }
 
     @Override
     public void showOfflineMessage() {
+
         Timber.d("Showing Offline Message");
 
         Snackbar.make(toolbar, R.string.offline_message, Snackbar.LENGTH_LONG)
@@ -210,20 +229,25 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 })
                 .setActionTextColor(Color.GREEN)
                 .show();
+
     }
 
     @Override
     public void showConnectionError() {
+
         Timber.d("Showing Connection Error Message");
 
         hideInternetConnectionError();
 
         internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, true);
+
     }
 
     public void hideInternetConnectionError() {
+
         if (internetConnectionDialog != null)
             internetConnectionDialog.dismiss();
+
     }
 
 }

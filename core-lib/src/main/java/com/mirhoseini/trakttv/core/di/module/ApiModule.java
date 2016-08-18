@@ -1,7 +1,7 @@
 package com.mirhoseini.trakttv.core.di.module;
 
 import com.google.gson.Gson;
-import com.mirhoseini.trakttv.core.service.TraktApi;
+import com.mirhoseini.trakttv.core.client.TraktApi;
 
 import javax.inject.Singleton;
 
@@ -56,6 +56,5 @@ public class ApiModule {
     public CallAdapter.Factory provideRxJavaCallAdapterFactory() {
         return RxJavaCallAdapterFactory.create();
     }
-
 
 }

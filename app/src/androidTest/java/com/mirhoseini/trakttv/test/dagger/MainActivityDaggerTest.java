@@ -8,7 +8,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.core.service.TraktApi;
+import com.mirhoseini.trakttv.core.client.TraktApi;
 import com.mirhoseini.trakttv.test.dagger.di.TestApplicationComponent;
 import com.mirhoseini.trakttv.view.activity.MainActivity;
 

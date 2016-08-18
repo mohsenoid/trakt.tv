@@ -14,14 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenter;
+import com.mirhoseini.trakttv.core.viewmodel.SearchMoviesViewModel;
 import com.mirhoseini.trakttv.core.di.module.SearchMoviesModule;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.view.BaseView;
-import com.mirhoseini.trakttv.core.view.SearchMoviesView;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
 import com.mirhoseini.trakttv.util.ItemSpaceDecoration;
+import com.mirhoseini.trakttv.view.BaseView;
 import com.mirhoseini.trakttv.view.adapter.SearchMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
 
@@ -38,10 +37,10 @@ import tv.trakt.api.model.SearchMovieResult;
  * Created by Mohsen on 19/07/16.
  */
 
-public class SearchMoviesFragment extends BaseFragment implements SearchMoviesView {
+public class SearchMoviesFragment extends BaseFragment {
 
     @Inject
-    public SearchMoviesPresenter presenter;
+    public SearchMoviesViewModel viewModel;
     @Inject
     Context context;
     @BindView(R.id.list)
@@ -105,21 +104,23 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     @Override
     protected void injectDependencies(ApplicationComponent component) {
         component
-                .plus(new SearchMoviesModule(this))
+                .plus(new SearchMoviesModule())
                 .inject(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+
         listener = null;
 
-        presenter.destroy();
-        presenter = null;
+        viewModel.destroy();
+        viewModel = null;
+
     }
 
-    @Override
     public void showProgress() {
+
         if (page == 1) {
             progress.setVisibility(View.VISIBLE);
         } else {
@@ -128,22 +129,24 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
 
         noResultFound.setVisibility(View.GONE);
         noInternet.setVisibility(View.GONE);
+
     }
 
-    @Override
     public void hideProgress() {
+
         progress.setVisibility(View.GONE);
         progressMore.setVisibility(View.GONE);
+
     }
 
-    @Override
     public void showMessage(String message) {
+
         if (null != listener) {
             listener.showMessage(message);
         }
+
     }
 
-    @Override
     public void showOfflineMessage() {
         if (null != listener) {
             listener.showOfflineMessage();
@@ -155,14 +158,12 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
         }
     }
 
-    @Override
     public void showConnectionError() {
         if (null != listener) {
             listener.showConnectionError();
         }
     }
 
-    @Override
     public void showRetryMessage() {
         Timber.d("Showing Retry Message");
 
@@ -175,15 +176,14 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     private void searchMovies() {
         page = 1;
         adapter = null;
-        presenter.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
+        viewModel.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
     }
 
     private void searchMoreMovies(int newPage) {
         page = newPage;
-        presenter.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
+        viewModel.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
     }
 
-    @Override
     public void setSearchMoviesValue(SearchMovieResult[] searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
 
