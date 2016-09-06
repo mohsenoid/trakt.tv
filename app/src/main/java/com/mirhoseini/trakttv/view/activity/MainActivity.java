@@ -58,7 +58,6 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     private SearchMoviesFragment searchMoviesFragment;
     private SearchView searchView = null;
     private MenuItem searchItem;
-    private boolean isSearchViewVisible;
 
 
     @Override
@@ -126,11 +125,13 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
 //         Intent movieIntent = MovieActivity.newIntent(context, movie);
 //         startActivity(movie);
+
+        showMessage(String.format("Item clicked: %s", movie.getTitle()));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         searchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
@@ -170,13 +171,11 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     }
 
     private void hideSearch() {
-        isSearchViewVisible = false;
 
         searchContainer.setVisibility(View.GONE);
     }
 
     private void showSearch() {
-        isSearchViewVisible = true;
 
         searchContainer.setVisibility(View.VISIBLE);
         //clear previous search results

@@ -33,10 +33,8 @@ public class SearchMoviesInteractorImpl implements SearchMoviesInteractor {
         this.scheduler = scheduler;
     }
 
-
     @Override
     public Observable<SearchMovieResult[]> searchMovies(String query, int page, int limit) {
-
         if (moviesSubscription != null && !moviesSubscription.isUnsubscribed())
             moviesSubscription.unsubscribe();
 
@@ -49,7 +47,6 @@ public class SearchMoviesInteractorImpl implements SearchMoviesInteractor {
                 .subscribe(moviesDataSubject);
 
         return moviesDataSubject.asObservable();
-
     }
 
     @Override

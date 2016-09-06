@@ -31,7 +31,6 @@ public class PopularMoviesInteractorImpl implements PopularMoviesInteractor {
         this.scheduler = scheduler;
     }
 
-
     @Override
     public Observable<Movie[]> loadPopularMovies(int page, int limit) {
         if (moviesSubscription == null || moviesSubscription.isUnsubscribed()) {
@@ -44,7 +43,6 @@ public class PopularMoviesInteractorImpl implements PopularMoviesInteractor {
         }
 
         return moviesDataSubject.asObservable();
-
     }
 
     @Override

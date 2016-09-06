@@ -39,7 +39,6 @@ import tv.trakt.api.model.Movie;
 
 public class PopularMoviesFragment extends BaseFragment implements PopularMoviesView, SwipeRefreshLayout.OnRefreshListener {
 
-
     @Inject
     public PopularMoviesPresenter presenter;
     @Inject
@@ -84,7 +83,7 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         ButterKnife.bind(this, view);
 
         // add material margins to list items card view
-        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(Constants.RECYCLER_VIEW_ITEM_SPACE));
 
         // allow pull to refresh on list
         swipeRefresh.setOnRefreshListener(this);

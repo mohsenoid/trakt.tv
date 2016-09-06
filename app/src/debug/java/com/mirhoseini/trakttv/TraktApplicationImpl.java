@@ -11,7 +11,7 @@ public class TraktApplicationImpl extends TraktApplication {
     @Override
     public void initApplication() {
 
-        //initialize Timber to log debug version
+        //initialize Timber to log in debug version
         Timber.plant(new Timber.DebugTree() {
             @Override
             protected String createStackElementTag(StackTraceElement element) {

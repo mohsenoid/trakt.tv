@@ -86,7 +86,6 @@ public class ClientModule {
         };
     }
 
-
     @Singleton
     @Provides
     @Named("offlineInterceptor")

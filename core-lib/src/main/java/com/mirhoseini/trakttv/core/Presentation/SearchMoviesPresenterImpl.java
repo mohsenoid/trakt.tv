@@ -45,7 +45,7 @@ public class SearchMoviesPresenterImpl implements SearchMoviesPresenter {
         if (null != subscription && !subscription.isUnsubscribed())
             subscription.unsubscribe();
 
-        if (query.isEmpty()) {
+        if (null == query || query.isEmpty()) {
             if (null != view) {
                 view.hideProgress();
             }
