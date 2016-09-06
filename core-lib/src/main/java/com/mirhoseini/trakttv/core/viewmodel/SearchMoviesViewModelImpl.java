@@ -20,6 +20,8 @@ public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
 
     private TraktApi api;
 
+    private String currentQuery;
+
     private BehaviorSubject<ArrayList<SearchMovieResult>> subject = BehaviorSubject.create();
     private BehaviorSubject<Boolean> isLoadingSubject = BehaviorSubject.create(false);
 
@@ -32,12 +34,14 @@ public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
     public Observable<ArrayList<SearchMovieResult>> searchMoviesObservable(String query, int page, int limit) {
 
         // Don't try and load if we're already loading or query is empty
-        if (isLoadingSubject.getValue() || query.isEmpty()) {
+        if ((isLoadingSubject.getValue() && null != currentQuery && currentQuery.equalsIgnoreCase(query)) || null == query || query.isEmpty()) {
             return Observable.empty();
         }
 
         //show loading progress
         isLoadingSubject.onNext(true);
+
+        currentQuery = query;
 
         // stop previous search
 //        if (null != moviesSubscription && !moviesSubscription.isUnsubscribed())

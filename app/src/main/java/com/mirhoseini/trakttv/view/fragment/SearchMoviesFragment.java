@@ -144,6 +144,8 @@ public class SearchMoviesFragment extends BaseFragment {
             });
         });
 
+        subscriptions = new CompositeSubscription();
+
         subscriptions.addAll(
                 // Bind loading status to show/hide progress
                 viewModel
