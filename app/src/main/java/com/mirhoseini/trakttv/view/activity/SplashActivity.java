@@ -57,6 +57,7 @@ public class SplashActivity extends BaseActivity {
         splashThread.start();
     }
 
+    // Listening whole activity touch events
     @Override
     public boolean onTouchEvent(MotionEvent evt) {
         if (evt.getAction() == MotionEvent.ACTION_DOWN) {
