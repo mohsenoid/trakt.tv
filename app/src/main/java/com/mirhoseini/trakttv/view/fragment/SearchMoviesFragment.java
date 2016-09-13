@@ -33,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -156,7 +157,6 @@ public class SearchMoviesFragment extends BaseFragment {
                 //Bind list of movies
                 viewModel
                         .moviesObservable()
-                        .delaySubscription(Constants.DELAY_BEFORE_SEARCH_STARTED, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this::setSearchMoviesValue, this::showErrorMessage),
 
@@ -238,7 +238,31 @@ public class SearchMoviesFragment extends BaseFragment {
 
     private void searchMoreMovies(int newPage) {
         page = newPage;
-        viewModel.searchMoviesObservable(query, page, Constants.PAGE_ROW_LIMIT);
+
+        subscriptions.add(
+                viewModel
+                        .searchMoviesObservable(query, page, Constants.PAGE_ROW_LIMIT)
+                        .subscribe(new Subscriber<ArrayList<SearchMovieResult>>() {
+                            @Override
+                            public void onCompleted() {
+                                if (!Utils.isConnected(context))
+                                    showOfflineMessage();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (!Utils.isConnected(context))
+                                    showRetryMessage();
+                                else
+                                    showOfflineMessage();
+                            }
+
+                            @Override
+                            public void onNext(ArrayList<SearchMovieResult> movies) {
+
+                            }
+                        })
+        );
     }
 
     public void setSearchMoviesValue(ArrayList<SearchMovieResult> searchMovieResults) {

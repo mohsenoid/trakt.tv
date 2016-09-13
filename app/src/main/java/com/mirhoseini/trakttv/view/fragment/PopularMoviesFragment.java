@@ -257,21 +257,27 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
                 viewModel
                         .loadPopularMoviesDataObservable(page, Constants.PAGE_ROW_LIMIT)
                         .subscribe(new Subscriber<ArrayList<Movie>>() {
-                            @Override
-                            public void onCompleted() {
+                                       @Override
+                                       public void onCompleted() {
+                                           if (!Utils.isConnected(context))
+                                               showOfflineMessage();
+                                       }
 
-                            }
+                                       @Override
+                                       public void onError(Throwable e) {
+                                           if (!Utils.isConnected(context))
+                                               showRetryMessage();
+                                           else
+                                               showOfflineMessage();
+                                       }
 
-                            @Override
-                            public void onError(Throwable e) {
-//                                showErrorMessage(e);
-                            }
+                                       @Override
+                                       public void onNext(ArrayList<Movie> movies) {
 
-                            @Override
-                            public void onNext(ArrayList<Movie> movies) {
+                                       }
+                                   }
 
-                            }
-                        })
+                        )
         );
     }
 
