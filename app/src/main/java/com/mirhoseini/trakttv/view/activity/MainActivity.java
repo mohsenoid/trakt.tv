@@ -143,7 +143,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 public boolean onQueryTextChange(String newText) {
                     Timber.i("onQueryTextChange: %s", newText);
 
-                    searchMoviesFragment.updateQuery(newText);
+                    searchMoviesFragment.getQuerySubject()
+                            .onNext(newText);
                     return true;
                 }
 
@@ -151,7 +152,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 public boolean onQueryTextSubmit(String query) {
                     Timber.i("onQueryTextSubmit: %s", query);
 
-                    searchMoviesFragment.updateQuery(query);
+                    searchMoviesFragment.getQuerySubject()
+                            .onNext(query);
                     return true;
                 }
             });
@@ -208,11 +210,11 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     }
 
     @Override
-    public void showNetworkConnectionError() {
+    public void showNetworkConnectionError(boolean isForce) {
         Timber.d("Showing Network Connection Error Message");
 
         hideInternetConnectionError();
-        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, true);
+        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, isForce);
     }
 
     public void hideInternetConnectionError() {

@@ -45,8 +45,6 @@ public class SearchMoviesViewModelImpl implements SearchMoviesViewModel {
         currentQuery = query;
 
         return api.searchMovies(query, page, limit, Constants.API_EXTENDED_FULL_IMAGES)
-                //delay for next key stroke
-                .debounce(Constants.DELAY_BEFORE_SEARCH_STARTED, TimeUnit.SECONDS)
                 //convert Movies array to List
                 .map(searchMovieResults -> new ArrayList<>(Arrays.asList(searchMovieResults)))
                 // Concatenate the new movies to the current posts list, then emit it via the subject

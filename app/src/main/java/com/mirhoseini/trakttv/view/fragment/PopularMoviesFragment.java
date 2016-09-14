@@ -165,23 +165,29 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
                 viewModel
                         .moviesObservable()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::setPopularMoviesValue, this::showErrorMessage),
+                        .subscribe(this::setPopularMoviesValue, this::onLoadError, this::onLoadComplete),
 
                 // Trigger next page load when RecyclerView is scrolled to the bottom
                 infiniteScrollObservable.subscribe(page -> loadMorePopularMoviesData(page))
         );
     }
 
-    private void showErrorMessage(Throwable throwable) {
-        Timber.e(throwable, "Error happened!!");
+    private void onLoadError(Throwable throwable) {
+        Timber.e(throwable, "Load error!");
 
-        if (null != adapter && adapter.getItemCount() > 0) {
-            showMessage(throwable.getMessage());
-        } else if (Utils.isConnected(context)) {
+//        if (null != adapter && adapter.getItemCount() > 0) {
+//            showMessage(throwable.getMessage());
+//        } else
+        if (Utils.isConnected(context)) {
             showRetryMessage();
         } else {
-            showNetworkConnectionError();
+            showNetworkConnectionError(adapter.getItemCount() == 0);
         }
+    }
+
+    private void onLoadComplete() {
+        if (!Utils.isConnected(context))
+            showOfflineMessage();
     }
 
     private void showMessage(String message) {
@@ -231,9 +237,9 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
         }
     }
 
-    public void showNetworkConnectionError() {
+    public void showNetworkConnectionError(boolean isForce) {
         if (null != listener) {
-            listener.showNetworkConnectionError();
+            listener.showNetworkConnectionError(isForce);
         }
     }
 
@@ -259,16 +265,12 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
                         .subscribe(new Subscriber<ArrayList<Movie>>() {
                                        @Override
                                        public void onCompleted() {
-                                           if (!Utils.isConnected(context))
-                                               showOfflineMessage();
+
                                        }
 
                                        @Override
                                        public void onError(Throwable e) {
-                                           if (!Utils.isConnected(context))
-                                               showRetryMessage();
-                                           else
-                                               showOfflineMessage();
+
                                        }
 
                                        @Override

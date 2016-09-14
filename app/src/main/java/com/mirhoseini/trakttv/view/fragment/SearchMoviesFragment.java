@@ -35,6 +35,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import tv.trakt.api.model.Movie;
@@ -101,9 +102,9 @@ public class SearchMoviesFragment extends BaseFragment {
 
         initBindings();
 
-//        if (null == savedInstanceState) {
-        searchMovies();
-//        }
+        if (null == savedInstanceState) {
+            searchMovies();
+        }
 
         return view;
     }
@@ -145,6 +146,12 @@ public class SearchMoviesFragment extends BaseFragment {
             });
         });
 
+        querySubject = BehaviorSubject.create();
+        querySubject
+                //delay for next key stroke
+                .debounce(Constants.DELAY_BEFORE_SEARCH_STARTED, TimeUnit.SECONDS)
+                .subscribe(this::updateQuery);
+
         subscriptions = new CompositeSubscription();
 
         subscriptions.addAll(
@@ -158,21 +165,35 @@ public class SearchMoviesFragment extends BaseFragment {
                 viewModel
                         .moviesObservable()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::setSearchMoviesValue, this::showErrorMessage),
+                        .subscribe(this::setSearchMoviesValue, this::onSearchError, this::onSearchComplete),
 
                 // Trigger next page load when RecyclerView is scrolled to the bottom
                 infiniteScrollObservable.subscribe(page -> searchMoreMovies(page))
         );
+
     }
 
-    private void showErrorMessage(Throwable throwable) {
-        if (null != adapter && adapter.getItemCount() > 0) {
-            showErrorMessage(throwable);
-        } else if (Utils.isConnected(context)) {
+    private void onSearchError(Throwable throwable) {
+        Timber.e(throwable, "Search error!!");
+
+//        if (null != adapter && adapter.getItemCount() > 0) {
+//            showMessage(throwable.getMessage());
+//        } else
+        if (Utils.isConnected(context)) {
             showRetryMessage();
         } else {
-            showNetworkConnectionError();
+            showNetworkConnectionError(adapter.getItemCount() == 0);
         }
+    }
+
+    private void onSearchComplete() {
+        if (!Utils.isConnected(context))
+            showOfflineMessage();
+    }
+
+    private void showMessage(String message) {
+        if (null != listener)
+            listener.showMessage(message);
     }
 
     public void setIsLoading(boolean isLoading) {
@@ -217,9 +238,9 @@ public class SearchMoviesFragment extends BaseFragment {
         }
     }
 
-    public void showNetworkConnectionError() {
+    public void showNetworkConnectionError(boolean isForce) {
         if (null != listener) {
-            listener.showNetworkConnectionError();
+            listener.showNetworkConnectionError(isForce);
         }
     }
 
@@ -245,20 +266,16 @@ public class SearchMoviesFragment extends BaseFragment {
                         .subscribe(new Subscriber<ArrayList<SearchMovieResult>>() {
                             @Override
                             public void onCompleted() {
-                                if (!Utils.isConnected(context))
-                                    showOfflineMessage();
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                if (!Utils.isConnected(context))
-                                    showRetryMessage();
-                                else
-                                    showOfflineMessage();
+
                             }
 
                             @Override
-                            public void onNext(ArrayList<SearchMovieResult> movies) {
+                            public void onNext(ArrayList<SearchMovieResult> searchMovieResults) {
 
                             }
                         })
@@ -268,19 +285,16 @@ public class SearchMoviesFragment extends BaseFragment {
     public void setSearchMoviesValue(ArrayList<SearchMovieResult> searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
 
-
         if (null != searchMovieResults) {
             if (searchMovieResults.size() == 0) {
                 noResultFound.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
             } else {
+                recyclerView.setVisibility(View.VISIBLE);
                 adapter.setMovies(searchMovieResults);
                 adapter.notifyDataSetChanged();
             }
         }
-
-        if (!Utils.isConnected(context))
-            showOfflineMessage();
 
         page++;
 
@@ -295,14 +309,18 @@ public class SearchMoviesFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
     }
 
+    BehaviorSubject<String> querySubject;
+
+    public BehaviorSubject<String> getQuerySubject() {
+        return querySubject;
+    }
+
     public void updateQuery(String query) {
         this.query = query;
         searchMovies();
     }
 
     public interface OnListFragmentInteractionListener extends BaseView {
-
         void onListFragmentInteraction(Movie movie);
-
     }
 }
