@@ -302,7 +302,7 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
         recyclerView.setLayoutManager(layoutManager);
 
         // add material margins to list items card view
-        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(Constants.RECYCLER_VIEW_ITEM_SPACE));
         recyclerView.setAdapter(adapter);
     }
 
