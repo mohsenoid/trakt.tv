@@ -14,22 +14,29 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenter;
 import com.mirhoseini.trakttv.core.di.module.SearchMoviesModule;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.view.BaseView;
-import com.mirhoseini.trakttv.core.view.SearchMoviesView;
+import com.mirhoseini.trakttv.core.viewmodel.SearchMoviesViewModel;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
 import com.mirhoseini.trakttv.util.ItemSpaceDecoration;
+import com.mirhoseini.trakttv.view.BaseView;
 import com.mirhoseini.trakttv.view.adapter.SearchMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import tv.trakt.api.model.Movie;
 import tv.trakt.api.model.SearchMovieResult;
@@ -38,10 +45,11 @@ import tv.trakt.api.model.SearchMovieResult;
  * Created by Mohsen on 19/07/16.
  */
 
-public class SearchMoviesFragment extends BaseFragment implements SearchMoviesView {
+public class SearchMoviesFragment extends BaseFragment {
 
     @Inject
-    public SearchMoviesPresenter presenter;
+    public SearchMoviesViewModel viewModel;
+
     @Inject
     Context context;
     @BindView(R.id.list)
@@ -58,36 +66,51 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     String query;
     private OnListFragmentInteractionListener listener;
     private SearchMoviesRecyclerViewAdapter adapter;
+    private CompositeSubscription subscriptions;
+    private LinearLayoutManager layoutManager;
+
     public SearchMoviesFragment() {
     }
 
     public static SearchMoviesFragment newInstance() {
         SearchMoviesFragment fragment = new SearchMoviesFragment();
+        fragment.setRetainInstance(true);
+
         return fragment;
     }
 
     @OnClick(R.id.no_internet)
-    void onNoInternetClick(View view) {
+    void onNoInternetClick() {
         searchMovies();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         ButterKnife.bind(this, view);
 
-        // add material margins to list items card view
-        recyclerView.addItemDecoration(new ItemSpaceDecoration(Constants.RECYCLER_VIEW_ITEM_SPACE));
+//        if (null == adapter)
+        initAdapter();
+
+        initRecyclerView();
+
+        initBindings();
+
+        if (null == savedInstanceState) {
+            searchMovies();
+        }
 
         return view;
+    }
+
+    private void initAdapter() {
+        adapter = new SearchMoviesRecyclerViewAdapter(listener);
     }
 
 
@@ -105,20 +128,89 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     @Override
     protected void injectDependencies(ApplicationComponent component) {
         component
-                .plus(new SearchMoviesModule(this))
+                .plus(new SearchMoviesModule())
                 .inject(this);
+    }
+
+    protected void initBindings() {
+        // Observable that emits when the RecyclerView is scrolled to the bottom
+        Observable<Integer> infiniteScrollObservable = Observable.create(subscriber -> {
+            recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount) {
+                    int newPage = page + 1;
+                    Timber.d("Loading more movies, Page: %d", newPage);
+
+                    subscriber.onNext(newPage);
+                }
+            });
+        });
+
+        querySubject = BehaviorSubject.create();
+        querySubject
+                //delay for next key stroke
+                .debounce(Constants.DELAY_BEFORE_SEARCH_STARTED, TimeUnit.SECONDS)
+                .subscribe(this::updateQuery);
+
+        subscriptions = new CompositeSubscription();
+
+        subscriptions.addAll(
+                // Bind loading status to show/hide progress
+                viewModel
+                        .isLoadingObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::setIsLoading),
+
+                //Bind list of movies
+                viewModel
+                        .moviesObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::setSearchMoviesValue, this::onSearchError, this::onSearchComplete),
+
+                // Trigger next page load when RecyclerView is scrolled to the bottom
+                infiniteScrollObservable.subscribe(page -> searchMoreMovies(page))
+        );
+
+    }
+
+    private void onSearchError(Throwable throwable) {
+        Timber.e(throwable, "Search error!!");
+
+//        if (null != adapter && adapter.getItemCount() > 0) {
+//            showMessage(throwable.getMessage());
+//        } else
+        if (Utils.isConnected(context)) {
+            showRetryMessage();
+        } else {
+            showNetworkConnectionError(adapter.getItemCount() == 0);
+        }
+    }
+
+    private void onSearchComplete() {
+        if (!Utils.isConnected(context))
+            showOfflineMessage();
+    }
+
+    private void showMessage(String message) {
+        if (null != listener)
+            listener.showMessage(message);
+    }
+
+    public void setIsLoading(boolean isLoading) {
+        if (isLoading)
+            showProgress();
+        else
+            hideProgress();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
 
-        presenter.destroy();
-        presenter = null;
+        listener = null;
+        subscriptions.unsubscribe();
     }
 
-    @Override
     public void showProgress() {
         if (page == 1) {
             progress.setVisibility(View.VISIBLE);
@@ -130,20 +222,11 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
         noInternet.setVisibility(View.GONE);
     }
 
-    @Override
     public void hideProgress() {
         progress.setVisibility(View.GONE);
         progressMore.setVisibility(View.GONE);
     }
 
-    @Override
-    public void showMessage(String message) {
-        if (null != listener) {
-            listener.showMessage(message);
-        }
-    }
-
-    @Override
     public void showOfflineMessage() {
         if (null != listener) {
             listener.showOfflineMessage();
@@ -155,14 +238,12 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
         }
     }
 
-    @Override
-    public void showConnectionError() {
+    public void showNetworkConnectionError(boolean isForce) {
         if (null != listener) {
-            listener.showConnectionError();
+            listener.showNetworkConnectionError(isForce);
         }
     }
 
-    @Override
     public void showRetryMessage() {
         Timber.d("Showing Retry Message");
 
@@ -173,50 +254,65 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     }
 
     private void searchMovies() {
-        page = 1;
-        adapter = null;
-        presenter.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
+        searchMoreMovies(1);
     }
 
     private void searchMoreMovies(int newPage) {
         page = newPage;
-        presenter.searchMovies(Utils.isConnected(context), query, page, Constants.PAGE_ROW_LIMIT);
+
+        subscriptions.add(
+                viewModel
+                        .searchMoviesObservable(query, page, Constants.PAGE_ROW_LIMIT)
+                        .subscribe(new Subscriber<ArrayList<SearchMovieResult>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(ArrayList<SearchMovieResult> searchMovieResults) {
+
+                            }
+                        })
+        );
     }
 
-    @Override
-    public void setSearchMoviesValue(SearchMovieResult[] searchMovieResults) {
+    public void setSearchMoviesValue(ArrayList<SearchMovieResult> searchMovieResults) {
         Timber.d("Loaded Page: %d", page);
 
-        if (null == adapter) {
-            if (searchMovieResults.length == 0) {
+        if (null != searchMovieResults) {
+            if (searchMovieResults.size() == 0) {
                 noResultFound.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
             } else {
-                adapter = new SearchMoviesRecyclerViewAdapter(searchMovieResults, listener);
-                initRecyclerView();
+                recyclerView.setVisibility(View.VISIBLE);
+                adapter.setMovies(searchMovieResults);
+                adapter.notifyDataSetChanged();
             }
-        } else {
-            adapter.addMoreMovies(searchMovieResults);
-            adapter.notifyDataSetChanged();
         }
 
         page++;
+
     }
 
     private void initRecyclerView() {
-        recyclerView.setVisibility(View.VISIBLE);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                Timber.d("Loading more movies, Page: %d", page + 1);
 
-                searchMoreMovies(page + 1);
-            }
-        });
+        // add material margins to list items card view
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
+        recyclerView.setAdapter(adapter);
+    }
+
+    BehaviorSubject<String> querySubject;
+
+    public BehaviorSubject<String> getQuerySubject() {
+        return querySubject;
     }
 
     public void updateQuery(String query) {
@@ -225,8 +321,6 @@ public class SearchMoviesFragment extends BaseFragment implements SearchMoviesVi
     }
 
     public interface OnListFragmentInteractionListener extends BaseView {
-
         void onListFragmentInteraction(Movie movie);
-
     }
 }

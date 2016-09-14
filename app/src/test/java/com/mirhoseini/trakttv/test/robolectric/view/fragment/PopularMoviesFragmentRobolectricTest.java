@@ -84,7 +84,7 @@ public class PopularMoviesFragmentRobolectricTest {
     public void testOnDestroy() throws Exception {
         fragment.onDetach();
 
-        assertNull(fragment.presenter);
+        assertNull(fragment.viewModel);
     }
 
 }

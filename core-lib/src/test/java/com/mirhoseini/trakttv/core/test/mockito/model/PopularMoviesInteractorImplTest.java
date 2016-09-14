@@ -2,8 +2,7 @@ package com.mirhoseini.trakttv.core.test.mockito.model;
 
 import com.mirhoseini.trakttv.core.model.PopularMoviesInteractor;
 import com.mirhoseini.trakttv.core.model.PopularMoviesInteractorImpl;
-import com.mirhoseini.trakttv.core.service.TraktApi;
-import com.mirhoseini.trakttv.core.util.SchedulerProvider;
+import com.mirhoseini.trakttv.core.client.TraktApi;
 
 import org.junit.Before;
 import org.junit.Test;

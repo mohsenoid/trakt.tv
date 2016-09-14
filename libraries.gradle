@@ -15,7 +15,7 @@ ext {
     daggerVersion = "2.4"
 
     //Java
-    rxjavaVersion = "1.1.8"
+    rxjavaVersion = "1.1.9"
 
     //Testing
     junitVersion = "4.12"
@@ -24,6 +24,7 @@ ext {
     supportTestVesion = "0.5"
     robolectricVersion = "3.1-rc1"
     espressoVersion = "2.2.2"
+    robospockVersion = "1.0.0"
 
     libraries = [
             androidSupport   : "com.android.support:support-v4:${androidSupportVersion}",
@@ -62,6 +63,7 @@ ext {
             supportTestRules  : "com.android.support.test:rules:${supportTestVesion}",
             espresso          : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
             espressoContrib   : "com.android.support.test.espresso:espresso-contrib:${espressoVersion}",
+            robospock         : "org.robospock:robospock:${robospockVersion}",
     ]
 
 }

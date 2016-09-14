@@ -14,22 +14,27 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.mirhoseini.trakttv.R;
-import com.mirhoseini.trakttv.core.Presentation.PopularMoviesPresenter;
 import com.mirhoseini.trakttv.core.di.module.PopularMoviesModule;
 import com.mirhoseini.trakttv.core.util.Constants;
-import com.mirhoseini.trakttv.core.view.BaseView;
-import com.mirhoseini.trakttv.core.view.PopularMoviesView;
+import com.mirhoseini.trakttv.core.viewmodel.PopularMoviesViewModel;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.util.EndlessRecyclerViewScrollListener;
 import com.mirhoseini.trakttv.util.ItemSpaceDecoration;
+import com.mirhoseini.trakttv.view.BaseView;
 import com.mirhoseini.trakttv.view.adapter.PopularMoviesRecyclerViewAdapter;
 import com.mirhoseini.utils.Utils;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import tv.trakt.api.model.Movie;
 
@@ -37,10 +42,11 @@ import tv.trakt.api.model.Movie;
  * Created by Mohsen on 19/07/16.
  */
 
-public class PopularMoviesFragment extends BaseFragment implements PopularMoviesView, SwipeRefreshLayout.OnRefreshListener {
+public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
-    public PopularMoviesPresenter presenter;
+    public PopularMoviesViewModel viewModel;
+
     @Inject
     Context context;
     @BindView(R.id.list)
@@ -53,53 +59,70 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     ProgressBar progressMore;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
+
     int page;
+
     private OnListFragmentInteractionListener listener;
     private PopularMoviesRecyclerViewAdapter adapter;
+    private CompositeSubscription subscriptions;
+    private LinearLayoutManager layoutManager;
+
     public PopularMoviesFragment() {
     }
 
     public static PopularMoviesFragment newInstance() {
         PopularMoviesFragment fragment = new PopularMoviesFragment();
+        fragment.setRetainInstance(true);
+
         return fragment;
     }
 
     @OnClick(R.id.no_internet)
-    void onNoInternetClick(View view) {
+    void onNoInternetClick() {
         loadPopularMoviesData();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_popular, container, false);
 
         ButterKnife.bind(this, view);
 
-        // add material margins to list items card view
-        recyclerView.addItemDecoration(new ItemSpaceDecoration(Constants.RECYCLER_VIEW_ITEM_SPACE));
-
         // allow pull to refresh on list
         swipeRefresh.setOnRefreshListener(this);
 
-        // load data for first run
-        if (adapter == null)
-            loadPopularMoviesData();
-        else
-            initRecyclerView();
+//        if (null == adapter)
+        initAdapter();
+
+        initRecyclerView();
+
+        initBindings();
+
+//        if (null == savedInstanceState) {
+        loadPopularMoviesData();
+//        }
 
         return view;
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    private void initAdapter() {
+        adapter = new PopularMoviesRecyclerViewAdapter(listener);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnListFragmentInteractionListener) {
             listener = (OnListFragmentInteractionListener) context;
         } else {
@@ -111,20 +134,82 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     @Override
     protected void injectDependencies(ApplicationComponent component) {
         component
-                .plus(new PopularMoviesModule(this))
+                .plus(new PopularMoviesModule())
                 .inject(this);
+    }
+
+    protected void initBindings() {
+        // Observable that emits when the RecyclerView is scrolled to the bottom
+        Observable<Integer> infiniteScrollObservable = Observable.create(subscriber -> {
+            recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount) {
+                    int newPage = page + 1;
+                    Timber.d("Loading more movies, Page: %d", newPage);
+
+                    subscriber.onNext(newPage);
+                }
+            });
+        });
+
+        subscriptions = new CompositeSubscription();
+
+        subscriptions.addAll(
+                // Bind loading status to show/hide progress
+                viewModel
+                        .isLoadingObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::setIsLoading),
+
+                //Bind list of movies
+                viewModel
+                        .moviesObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::setPopularMoviesValue, this::onLoadError, this::onLoadComplete),
+
+                // Trigger next page load when RecyclerView is scrolled to the bottom
+                infiniteScrollObservable.subscribe(page -> loadMorePopularMoviesData(page))
+        );
+    }
+
+    private void onLoadError(Throwable throwable) {
+        Timber.e(throwable, "Load error!");
+
+//        if (null != adapter && adapter.getItemCount() > 0) {
+//            showMessage(throwable.getMessage());
+//        } else
+        if (Utils.isConnected(context)) {
+            showRetryMessage();
+        } else {
+            showNetworkConnectionError(adapter.getItemCount() == 0);
+        }
+    }
+
+    private void onLoadComplete() {
+        if (!Utils.isConnected(context))
+            showOfflineMessage();
+    }
+
+    private void showMessage(String message) {
+        if (null != listener)
+            listener.showMessage(message);
+    }
+
+    public void setIsLoading(boolean isLoading) {
+        if (isLoading)
+            showProgress();
+        else
+            hideProgress();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
 
-        presenter.destroy();
-        presenter = null;
+        listener = null;
+        subscriptions.unsubscribe();
     }
 
-    @Override
     public void showProgress() {
         if (page == 1) {
             progress.setVisibility(View.VISIBLE);
@@ -136,21 +221,12 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         noInternet.setVisibility(View.GONE);
     }
 
-    @Override
     public void hideProgress() {
         progress.setVisibility(View.GONE);
         swipeRefresh.setRefreshing(false);
         progressMore.setVisibility(View.GONE);
     }
 
-    @Override
-    public void showMessage(String message) {
-        if (null != listener) {
-            listener.showMessage(message);
-        }
-    }
-
-    @Override
     public void showOfflineMessage() {
         if (null != listener) {
             listener.showOfflineMessage();
@@ -161,14 +237,12 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
         }
     }
 
-    @Override
-    public void showConnectionError() {
+    public void showNetworkConnectionError(boolean isForce) {
         if (null != listener) {
-            listener.showConnectionError();
+            listener.showNetworkConnectionError(isForce);
         }
     }
 
-    @Override
     public void showRetryMessage() {
         Timber.d("Showing Retry Message");
 
@@ -179,43 +253,57 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     }
 
     private void loadPopularMoviesData() {
-        page = 1;
-        adapter = null;
-        presenter.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
+        loadMorePopularMoviesData(1);
     }
 
     private void loadMorePopularMoviesData(int newPage) {
         page = newPage;
-        presenter.loadPopularMoviesData(Utils.isConnected(context), page, Constants.PAGE_ROW_LIMIT);
+
+        subscriptions.add(
+                viewModel
+                        .loadPopularMoviesDataObservable(page, Constants.PAGE_ROW_LIMIT)
+                        .subscribe(new Subscriber<ArrayList<Movie>>() {
+                                       @Override
+                                       public void onCompleted() {
+
+                                       }
+
+                                       @Override
+                                       public void onError(Throwable e) {
+
+                                       }
+
+                                       @Override
+                                       public void onNext(ArrayList<Movie> movies) {
+
+                                       }
+                                   }
+
+                        )
+        );
     }
 
-    @Override
-    public void setPopularMoviesValue(Movie[] movies) {
+    public void setPopularMoviesValue(ArrayList<Movie> movies) {
         Timber.d("Loaded Page: %d", page);
 
-        if (null == adapter) {
-            adapter = new PopularMoviesRecyclerViewAdapter(movies, listener);
-            initRecyclerView();
-        } else {
-            adapter.addMoreMovies(movies);
+        if (null != movies) {
+            adapter.setMovies(movies);
             adapter.notifyDataSetChanged();
         }
+
+        if (!Utils.isConnected(context))
+            showOfflineMessage();
 
         page++;
     }
 
     private void initRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                Timber.d("Loading more movies, Page: %d", page + 1);
 
-                loadMorePopularMoviesData(page + 1);
-            }
-        });
+        // add material margins to list items card view
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(48));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -224,8 +312,6 @@ public class PopularMoviesFragment extends BaseFragment implements PopularMovies
     }
 
     public interface OnListFragmentInteractionListener extends BaseView {
-
         void onListFragmentInteraction(Movie movie);
-
     }
 }

@@ -12,7 +12,6 @@ import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import tv.trakt.api.model.Movie;
 
@@ -22,11 +21,11 @@ import tv.trakt.api.model.Movie;
 
 public class PopularMoviesRecyclerViewAdapter extends RecyclerView.Adapter<PopularMoviesRecyclerViewAdapter.ViewHolder> {
 
-    private final ArrayList<Movie> movies;
     private final PopularMoviesFragment.OnListFragmentInteractionListener listener;
 
-    public PopularMoviesRecyclerViewAdapter(Movie[] movies, PopularMoviesFragment.OnListFragmentInteractionListener listener) {
-        this.movies = new ArrayList<>(Arrays.asList(movies));
+    private ArrayList<Movie> movies = new ArrayList<>();
+
+    public PopularMoviesRecyclerViewAdapter(PopularMoviesFragment.OnListFragmentInteractionListener listener) {
         this.listener = listener;
     }
 
@@ -60,8 +59,8 @@ public class PopularMoviesRecyclerViewAdapter extends RecyclerView.Adapter<Popul
         return movies.size();
     }
 
-    public void addMoreMovies(Movie[] movies) {
-        this.movies.addAll(new ArrayList<>(Arrays.asList(movies)));
+    public void setMovies(ArrayList<Movie> movies) {
+        this.movies = movies;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

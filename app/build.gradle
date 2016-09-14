@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'groovyx.grooid.groovy-android'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -54,6 +55,7 @@ dependencies {
 
     testCompile rootProject.ext.testLibraries.junit
     testCompile rootProject.ext.testLibraries.robolectric
+    testCompile rootProject.ext.testLibraries.robospock
 
     androidTestCompile rootProject.ext.testLibraries.mockito
     androidTestCompile rootProject.ext.testLibraries.dexmaker

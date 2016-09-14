@@ -1,10 +1,8 @@
 package com.mirhoseini.trakttv.core.di.module;
 
-import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenter;
-import com.mirhoseini.trakttv.core.Presentation.SearchMoviesPresenterImpl;
-import com.mirhoseini.trakttv.core.model.SearchMoviesInteractor;
-import com.mirhoseini.trakttv.core.model.SearchMoviesInteractorImpl;
-import com.mirhoseini.trakttv.core.view.SearchMoviesView;
+import com.mirhoseini.trakttv.core.di.scope.SearchMoviesScope;
+import com.mirhoseini.trakttv.core.viewmodel.SearchMoviesViewModel;
+import com.mirhoseini.trakttv.core.viewmodel.SearchMoviesViewModelImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,25 +13,11 @@ import dagger.Provides;
 
 @Module
 public class SearchMoviesModule {
-    private SearchMoviesView view;
-
-    public SearchMoviesModule(SearchMoviesView view) {
-        this.view = view;
-    }
 
     @Provides
-    public SearchMoviesView provideView() {
-        return view;
-    }
-
-    @Provides
-    public SearchMoviesInteractor provideInteractor(SearchMoviesInteractorImpl interactor) {
-        return interactor;
-    }
-
-    @Provides
-    public SearchMoviesPresenter providePresenter(SearchMoviesPresenterImpl presenter) {
-        presenter.setView(view);
+    @SearchMoviesScope
+    public SearchMoviesViewModel providePresenter(SearchMoviesViewModelImpl presenter) {
         return presenter;
     }
+
 }

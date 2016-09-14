@@ -1,6 +1,7 @@
 package com.mirhoseini.trakttv.core.di.module;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -22,10 +23,11 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 @Module
 public class ClientModule {
+
     private static final String CACHE_CONTROL = "Cache-Control";
 
-    @Singleton
     @Provides
+    @Singleton
     public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor,
                                             @Named("networkTimeoutInSeconds") int networkTimeoutInSeconds,
                                             @Named("isDebug") boolean isDebug,
@@ -46,8 +48,8 @@ public class ClientModule {
         return okHttpClient.build();
     }
 
-    @Singleton
     @Provides
+    @Singleton
     public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -69,8 +71,8 @@ public class ClientModule {
         return cache;
     }
 
-    @Singleton
     @Provides
+    @Singleton
     @Named("cacheInterceptor")
     public Interceptor provideCacheInterceptor(@Named("cacheMaxAge") int maxAgeMin) {
         return chain -> {
@@ -86,8 +88,9 @@ public class ClientModule {
         };
     }
 
-    @Singleton
+
     @Provides
+    @Singleton
     @Named("offlineInterceptor")
     public Interceptor provideOfflineCacheInterceptor(@Named("isConnected") boolean isConnected, @Named("cacheMaxStale") int maxStaleDay) {
         return chain -> {
@@ -106,4 +109,5 @@ public class ClientModule {
             return chain.proceed(request);
         };
     }
+
 }

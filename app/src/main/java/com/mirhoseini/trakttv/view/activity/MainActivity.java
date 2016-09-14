@@ -68,6 +68,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         // inject views using ButterKnife
@@ -105,10 +106,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
     private void createFragments() {
         popularMoviesFragment = PopularMoviesFragment.newInstance();
-        popularMoviesFragment.setRetainInstance(true);
-
         searchMoviesFragment = SearchMoviesFragment.newInstance();
-        searchMoviesFragment.setRetainInstance(true);
     }
 
     private void attachFragments() {
@@ -138,6 +136,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         if (searchItem != null) {
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         }
+
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
@@ -146,7 +145,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 public boolean onQueryTextChange(String newText) {
                     Timber.i("onQueryTextChange: %s", newText);
 
-                    searchMoviesFragment.updateQuery(newText);
+                    searchMoviesFragment.getQuerySubject()
+                            .onNext(newText);
                     return true;
                 }
 
@@ -154,7 +154,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 public boolean onQueryTextSubmit(String query) {
                     Timber.i("onQueryTextSubmit: %s", query);
 
-                    searchMoviesFragment.updateQuery(query);
+                    searchMoviesFragment.getQuerySubject()
+                            .onNext(query);
                     return true;
                 }
             });
@@ -167,16 +168,15 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
             });
 
         }
+
         return true;
     }
 
     private void hideSearch() {
-
         searchContainer.setVisibility(View.GONE);
     }
 
     private void showSearch() {
-
         searchContainer.setVisibility(View.VISIBLE);
         //clear previous search results
         searchMoviesFragment.updateQuery("");
@@ -212,12 +212,11 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     }
 
     @Override
-    public void showConnectionError() {
-        Timber.d("Showing Connection Error Message");
+    public void showNetworkConnectionError(boolean isForce) {
+        Timber.d("Showing Network Connection Error Message");
 
         hideInternetConnectionError();
-
-        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, true);
+        internetConnectionDialog = Utils.showNoInternetConnectionDialog(this, isForce);
     }
 
     public void hideInternetConnectionError() {

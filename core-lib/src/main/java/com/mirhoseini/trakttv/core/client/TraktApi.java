@@ -1,4 +1,4 @@
-package com.mirhoseini.trakttv.core.service;
+package com.mirhoseini.trakttv.core.client;
 
 
 import com.mirhoseini.trakttv.core.util.Constants;

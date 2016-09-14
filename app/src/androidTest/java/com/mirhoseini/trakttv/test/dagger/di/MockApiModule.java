@@ -1,7 +1,7 @@
 package com.mirhoseini.trakttv.test.dagger.di;
 
 import com.mirhoseini.trakttv.core.di.module.ApiModule;
-import com.mirhoseini.trakttv.core.service.TraktApi;
+import com.mirhoseini.trakttv.core.client.TraktApi;
 
 import retrofit2.Retrofit;
 

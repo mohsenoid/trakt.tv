@@ -44,15 +44,15 @@ public class MainActivityRobolectricTest {
 
     @Test
     public void testShowInternetConnectionError() throws Exception {
-        activity.showConnectionError();
+        activity.showNetworkConnectionError(true);
 
         assertAlertDialogIsShown(R.string.no_connection_title, R.string.no_connection);
     }
 
     @Test
     public void testShowDoubleInternetConnectionError() throws Exception {
-        activity.showConnectionError();
-        activity.showConnectionError();
+        activity.showNetworkConnectionError(true);
+        activity.showNetworkConnectionError(true);
 
         assertAlertDialogIsShown(R.string.no_connection_title, R.string.no_connection);
     }
