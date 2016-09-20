@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "470049962456",
+    "firebase_url": "https://trakttv-f8b4e.firebaseio.com",
+    "project_id": "trakttv-f8b4e",
+    "storage_bucket": "trakttv-f8b4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470049962456:android:14abc8c7de4469de",
+        "android_client_info": {
+          "package_name": "com.mirhoseini.trakttv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470049962456-0k20o77unt8bbbuvfdknfaj6f4j8qol8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mirhoseini.trakttv",
+            "certificate_hash": "430B0413C05B949C205BC212DC084CA5DAF25D3B"
+          }
+        },
+        {
+          "client_id": "470049962456-1k9jhogo7pemq13dhoskfcu49l6vo2e9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0vtC1txzNG1xifR4JFTmfI5zs-urcKsk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470049962456-1k9jhogo7pemq13dhoskfcu49l6vo2e9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
