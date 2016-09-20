@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'groovyx.grooid.groovy-android'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -87,5 +88,5 @@ dependencies {
 
     compile rootProject.ext.libraries.timber
 
+    compile rootProject.ext.libraries.firebase
 }
-

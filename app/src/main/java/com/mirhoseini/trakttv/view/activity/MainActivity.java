@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment;
@@ -145,6 +146,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 public boolean onQueryTextChange(String newText) {
                     Timber.i("onQueryTextChange: %s", newText);
 
+                    logSearchTermOnFireBase(newText);
+
                     searchMoviesFragment.getQuerySubject()
                             .onNext(newText);
                     return true;
@@ -153,6 +156,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     Timber.i("onQueryTextSubmit: %s", query);
+
+                    logSearchTermOnFireBase(query);
 
                     searchMoviesFragment.getQuerySubject()
                             .onNext(query);
@@ -170,6 +175,12 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         }
 
         return true;
+    }
+
+    private void logSearchTermOnFireBase(String query) {
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH, params);
     }
 
     private void hideSearch() {

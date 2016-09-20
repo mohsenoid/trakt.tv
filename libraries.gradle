@@ -13,6 +13,7 @@ ext {
     timberVersion = "4.1.2"
     picassoVersion = "2.5.2"
     daggerVersion = "2.4"
+    firebaseVersion = "9.4.0"
 
     //Java
     rxjavaVersion = "1.1.9"
@@ -45,6 +46,7 @@ ext {
             retrofitAdapter  : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
             picasso          : "com.squareup.picasso:picasso:${picassoVersion}",
             dagger           : "com.google.dagger:dagger:${daggerVersion}",
+            firebase         : "com.google.firebase:firebase-core:${firebaseVersion}",
     ]
 
     aptLibraries = [
