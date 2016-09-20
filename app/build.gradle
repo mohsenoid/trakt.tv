@@ -91,4 +91,5 @@ dependencies {
 
     compile rootProject.ext.libraries.firebase
     compile rootProject.ext.libraries.firebaseMessaging
+    compile rootProject.ext.libraries.firebaseCrash
 }
