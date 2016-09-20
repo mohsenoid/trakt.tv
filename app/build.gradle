@@ -76,6 +76,7 @@ dependencies {
     compile rootProject.ext.libraries.rxandroid
 
     compile rootProject.ext.libraries.utils
+    compile rootProject.ext.libraries.appSettings
 
     compile rootProject.ext.libraries.picasso
 
@@ -89,4 +90,5 @@ dependencies {
     compile rootProject.ext.libraries.timber
 
     compile rootProject.ext.libraries.firebase
+    compile rootProject.ext.libraries.firebaseMessaging
 }

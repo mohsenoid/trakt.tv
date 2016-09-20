@@ -22,4 +22,5 @@ public class Constants {
 
     public static final long DELAY_BEFORE_SEARCH_STARTED = 1; // 2 sec
     public static final int RECYCLER_VIEW_ITEM_SPACE = 48;
+
 }

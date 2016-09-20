@@ -14,6 +14,7 @@ ext {
     picassoVersion = "2.5.2"
     daggerVersion = "2.4"
     firebaseVersion = "9.4.0"
+    appSettingsVersion = "1.0.2"
 
     //Java
     rxjavaVersion = "1.1.9"
@@ -37,6 +38,7 @@ ext {
             rxjava           : "io.reactivex:rxjava:${rxjavaVersion}",
             rxandroid        : "io.reactivex:rxandroid:${rxandroidVersion}",
             utils            : "com.mirhoseini.utils:utils:${utilsVersion}",
+            appSettings      : "com.mirhoseini.appsettings:appsettings:${appSettingsVersion}",
             timber           : "com.jakewharton.timber:timber:${timberVersion}",
             butterknife      : "com.jakewharton:butterknife:${butterknifeVersion}",
             okhttp           : "com.squareup.okhttp3:okhttp:${okhttpVersion}",
@@ -47,6 +49,7 @@ ext {
             picasso          : "com.squareup.picasso:picasso:${picassoVersion}",
             dagger           : "com.google.dagger:dagger:${daggerVersion}",
             firebase         : "com.google.firebase:firebase-core:${firebaseVersion}",
+            firebaseMessaging: "com.google.firebase:firebase-messaging:${firebaseVersion}",
     ]
 
     aptLibraries = [
