@@ -179,7 +179,8 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     private void showSearch() {
         searchContainer.setVisibility(View.VISIBLE);
         //clear previous search results
-        searchMoviesFragment.updateQuery("");
+        searchMoviesFragment.getQuerySubject()
+                .onNext("");
     }
 
     @Override
