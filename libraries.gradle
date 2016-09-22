@@ -1,10 +1,10 @@
 ext {
     minSdkVersion = 9
     compileSdkVersion = 24
-    buildToolsVersion = "24.0.0"
+    buildToolsVersion = "24.0.2"
 
     //Android
-    androidSupportVersion = "24.0.0"
+    androidSupportVersion = "24.2.0"
     butterknifeVersion = "8.0.1"
     rxandroidVersion = "1.2.1"
     okhttpVersion = "3.4.1"
@@ -32,9 +32,10 @@ ext {
             androidSupport   : "com.android.support:support-v4:${androidSupportVersion}",
             appCompat        : "com.android.support:appcompat-v7:${androidSupportVersion}",
             designSupport    : "com.android.support:design:${androidSupportVersion}",
+            vectorSupport    : "com.android.support:support-vector-drawable:${androidSupportVersion}",
             cardView         : "com.android.support:cardview-v7:${androidSupportVersion}",
             recyclerView     : "com.android.support:recyclerview-v7:${androidSupportVersion}",
-            vectorSupport    : "com.android.support:support-vector-drawable:${androidSupportVersion}",
+            palette          : "com.android.support:palette-v7:${androidSupportVersion}",
             rxjava           : "io.reactivex:rxjava:${rxjavaVersion}",
             rxandroid        : "io.reactivex:rxandroid:${rxandroidVersion}",
             utils            : "com.mirhoseini.utils:utils:${utilsVersion}",
@@ -51,6 +52,7 @@ ext {
             firebase         : "com.google.firebase:firebase-core:${firebaseVersion}",
             firebaseMessaging: "com.google.firebase:firebase-messaging:${firebaseVersion}",
             firebaseCrash    : "com.google.firebase:firebase-crash:${firebaseVersion}",
+
     ]
 
     aptLibraries = [
