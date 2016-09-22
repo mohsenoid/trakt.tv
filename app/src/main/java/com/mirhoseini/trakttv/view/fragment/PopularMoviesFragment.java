@@ -1,10 +1,12 @@
 package com.mirhoseini.trakttv.view.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -99,6 +101,8 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
 //        if (null == adapter)
         initAdapter();
 
+        initLayoutManager();
+
         initRecyclerView();
 
         initBindings();
@@ -108,6 +112,14 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
 //        }
 
         return view;
+    }
+
+    private void initLayoutManager() {
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            layoutManager = new LinearLayoutManager(context);
+        } else {
+            layoutManager = new GridLayoutManager(context, 2);
+        }
     }
 
     @Override
@@ -298,7 +310,6 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
     }
 
     private void initRecyclerView() {
-        layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
 
         // add material margins to list items card view
