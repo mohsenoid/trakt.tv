@@ -21,7 +21,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.mirhoseini.trakttv.R;
+import com.mirhoseini.trakttv.core.util.Constants;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
 import com.mirhoseini.trakttv.view.fragment.PopularMoviesFragment;
 import com.mirhoseini.trakttv.view.fragment.SearchMoviesFragment;
@@ -77,7 +79,13 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
         setupToolbar();
 
+        subscribeToNewsFcmTopic();
+
         Timber.d("Main Activity Created");
+    }
+
+    private void subscribeToNewsFcmTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.FCM_NEWS_TOPIC);
     }
 
     private void setupToolbar() {
