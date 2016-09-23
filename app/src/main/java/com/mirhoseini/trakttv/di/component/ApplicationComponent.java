@@ -13,7 +13,6 @@ import com.mirhoseini.trakttv.view.activity.SplashActivity;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import com.mirhoseini.trakttv.view.fragment.DetailsFragment;
 
 /**
  * Created by Mohsen on 19/07/16.
@@ -38,5 +37,4 @@ public interface ApplicationComponent {
 
     void inject(DetailsActivity activity);
 
-    void inject(DetailsFragment fragment);
 }

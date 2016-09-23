@@ -3,16 +3,14 @@ package com.mirhoseini.trakttv.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.mirhoseini.trakttv.R;
+import com.mirhoseini.trakttv.databinding.ActivityDetailsBinding;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
-import com.mirhoseini.trakttv.view.fragment.DetailsFragment;
 
 import javax.inject.Inject;
 
@@ -36,9 +34,8 @@ public class DetailsActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private DetailsFragment detailsFragment;
-
     private Movie movie;
+    private ActivityDetailsBinding binding;
 
     public static Intent newIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, DetailsActivity.class);
@@ -53,13 +50,16 @@ public class DetailsActivity extends BaseActivity {
         //Fixing the delayed loading problem
 //        ActivityCompat.postponeEnterTransition(this);
 
-        setContentView(R.layout.activity_details);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_details);
 
         Intent intent = getIntent();
         if (null != intent)
             movie = (Movie) intent.getSerializableExtra(ARG_MOVIE);
         else
             finish();
+
+        binding.setMovie(movie);
+//            binding.executePendingBindings();
 
         // inject views using ButterKnife
         ButterKnife.bind(this);
@@ -69,40 +69,10 @@ public class DetailsActivity extends BaseActivity {
         Timber.d("Details Activity Created");
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        detailsFragment = (DetailsFragment) fragmentManager.findFragmentByTag(TAG_DETAILS_FRAGMENT);
-
-
-        // If the Fragment is non-null, then it is currently being
-        // retained across a configuration change.
-        if (null == detailsFragment) {
-            createFragments();
-        }
-
-        attachFragments();
-
-        Timber.d("Details Activity Resumed");
-    }
-
-    private void createFragments() {
-        detailsFragment = DetailsFragment.newInstance(movie);
-    }
-
-    private void attachFragments() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.details_fragment, detailsFragment, TAG_DETAILS_FRAGMENT);
-        fragmentTransaction.commitAllowingStateLoss();
-    }
-
-
     private void setupToolbar() {
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.while_logo);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(movie.getTitle());
     }
 
     @Override
