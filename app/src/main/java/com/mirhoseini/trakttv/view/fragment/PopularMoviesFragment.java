@@ -323,6 +323,6 @@ public class PopularMoviesFragment extends BaseFragment implements SwipeRefreshL
     }
 
     public interface OnListFragmentInteractionListener extends BaseView {
-        void onListFragmentInteraction(Movie movie);
+        void onListFragmentInteraction(View sharedView, Movie movie);
     }
 }

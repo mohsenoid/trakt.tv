@@ -3,11 +3,13 @@ package tv.trakt.api.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Mohsen on 19/07/16.
  */
 
-public class Images {
+public class Images implements Serializable {
 
     @SerializedName("fanart")
     @Expose

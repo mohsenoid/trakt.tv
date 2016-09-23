@@ -3,6 +3,7 @@ package tv.trakt.api.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by Mohsen on 19/07/16.
  */
 
-public class Movie {
+public class Movie implements Serializable {
 
     @SerializedName("title")
     @Expose

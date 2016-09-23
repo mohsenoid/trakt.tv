@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mirhoseini.trakttv">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     //fixes Timber Library min sdk issue
     <uses-sdk tools:overrideLibrary="timber.log" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".TraktApplicationImpl"
@@ -16,15 +16,16 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".view.activity.SplashActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Splash" />
 
-        <!-- use an alias in case we want to change the launch activity later without breaking
-            homescreen shortcuts. Note must be defined after the targetActivity -->
+        <!--
+             use an alias in case we want to change the launch activity later without breaking
+            homescreen shortcuts. Note must be defined after the targetActivity
+        -->
         <activity-alias
             android:name=".Launcher"
             android:label="@string/app_name"
@@ -38,19 +39,26 @@
 
         <activity android:name=".view.activity.MainActivity" />
 
-        <service
-            android:name=".service.MyFirebaseInstanceIDService">
+        <service android:name=".service.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".service.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service
-            android:name=".service.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+        <activity
+            android:name=".view.activity.DetailsActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".view.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mirhoseini.trakttv.view.activity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -332,6 +332,6 @@ public class SearchMoviesFragment extends BaseFragment {
     }
 
     public interface OnListFragmentInteractionListener extends BaseView {
-        void onListFragmentInteraction(Movie movie);
+        void onListFragmentInteraction(View sharedView, Movie movie);
     }
 }

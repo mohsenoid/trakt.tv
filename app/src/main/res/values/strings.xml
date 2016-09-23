@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Trakt.tv</string>
-
     <string name="offline_message">No internet connection, Offline data!</string>
     <string name="go_online">Go Online</string>
     <string name="retry_message">Network error, offline data!</string>

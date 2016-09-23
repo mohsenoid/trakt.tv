@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -110,7 +112,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
 
         attachFragments();
 
-        Timber.d("Activity Resumed");
+        Timber.d("Main Activity Resumed");
     }
 
     private void createFragments() {
@@ -123,17 +125,6 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
         fragmentTransaction.replace(R.id.popular_movies_fragment, popularMoviesFragment, TAG_POPULAR_MOVIES_FRAGMENT);
         fragmentTransaction.replace(R.id.search_movies_fragment, searchMoviesFragment, TAG_SEARCH_MOVIES_FRAGMENT);
         fragmentTransaction.commitAllowingStateLoss();
-    }
-
-
-    @Override
-    public void onListFragmentInteraction(Movie movie) {
-        /* Movie's full data can be loaded into another activity*/
-
-//         Intent movieIntent = MovieActivity.newIntent(context, movie);
-//         startActivity(movie);
-
-        showMessage(String.format("Item clicked: %s", movie.getTitle()));
     }
 
     @Override
@@ -242,6 +233,13 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     public void hideInternetConnectionError() {
         if (internetConnectionDialog != null)
             internetConnectionDialog.dismiss();
+    }
+
+    @Override
+    public void onListFragmentInteraction(View sharedView, Movie movie) {
+        Intent detailsIntent = DetailsActivity.newIntent(context, movie);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedView, "cover");
+        ActivityCompat.startActivity(this, detailsIntent, options.toBundle());
     }
 
 }
