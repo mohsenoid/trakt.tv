@@ -70,7 +70,7 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -88,13 +88,15 @@
                     android:id="@+id/year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/details"
                     android:layout_gravity="right"
                     android:layout_margin="@dimen/keyLine1"
                     android:text="@{movie.year}"
                     android:textAppearance="@style/textAppearanceListItemSmall"
                     tools:text="Year" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
         </android.support.v4.widget.NestedScrollView>

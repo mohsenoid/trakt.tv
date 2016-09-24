@@ -6,11 +6,13 @@ import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mirhoseini.trakttv.R;
 import com.mirhoseini.trakttv.databinding.ActivityDetailsBinding;
 import com.mirhoseini.trakttv.di.component.ApplicationComponent;
+import com.mirhoseini.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -76,11 +78,24 @@ public class DetailsActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details, menu);
+
+        if (null == movie.getTrailer())
+            menu.findItem(R.id.trailer).setVisible(false);
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 supportFinishAfterTransition();
+                return true;
+            case R.id.trailer:
+                Utils.openWebsite(this, movie.getTrailer());
                 return true;
         }
         return super.onOptionsItemSelected(item);
