@@ -31,6 +31,11 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        // The Theme's windowBackground is masked by the opaque background of the activity, and
+        // the windowBackground causes an unnecessary overdraw. Nullifying the windowBackground
+        // removes that overdraw.
+        getWindow().setBackgroundDrawable(null);
+
         // The thread to wait for splash screen events
         splashThread = new Thread() {
             @Override

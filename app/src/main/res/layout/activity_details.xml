@@ -30,8 +30,8 @@
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
-                
-                <RelativeLayout
+
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_collapseMode="parallax">
@@ -47,19 +47,12 @@
                         app:imageUrl="@{movie.images.thumb.full}"
                         app:srcCompat="@drawable/default_image" />
 
-                    <TextView
-                        android:id="@+id/year"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@color/trans_gray"
-                        android:padding="@dimen/keyLine1"
-                        android:text="@{movie.year}"
-                        android:textAppearance="@style/textAppearanceListItemSmall"
-                        tools:text="Year" />
-                </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/scrim" />
+
+                </FrameLayout>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -67,7 +60,7 @@
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
                     app:titleTextColor="?attr/colorPrimary" />
-                
+
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
@@ -77,18 +70,32 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <TextView
-                android:id="@+id/details"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/keyLine1"
-                android:layout_marginEnd="@dimen/keyLine1"
-                android:layout_marginLeft="@dimen/keyLine1"
-                android:layout_marginRight="@dimen/keyLine1"
-                android:layout_marginStart="@dimen/keyLine1"
-                android:text="@{movie.overview}"
-                android:textAppearance="@style/textAppearanceListItemText"
-                tools:text="DETAILS" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/keyLine1"
+                    android:text="@{movie.overview}"
+                    android:textAppearance="@style/textAppearanceListItemText"
+                    tools:text="DETAILS" />
+
+                <TextView
+                    android:id="@+id/year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_margin="@dimen/keyLine1"
+                    android:text="@{movie.year}"
+                    android:textAppearance="@style/textAppearanceListItemSmall"
+                    tools:text="Year" />
+
+            </LinearLayout>
+
 
         </android.support.v4.widget.NestedScrollView>
 
