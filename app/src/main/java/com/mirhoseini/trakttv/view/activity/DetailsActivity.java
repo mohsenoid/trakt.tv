@@ -61,7 +61,6 @@ public class DetailsActivity extends BaseActivity {
             finish();
 
         binding.setMovie(movie);
-//            binding.executePendingBindings();
 
         // inject views using ButterKnife
         ButterKnife.bind(this);
