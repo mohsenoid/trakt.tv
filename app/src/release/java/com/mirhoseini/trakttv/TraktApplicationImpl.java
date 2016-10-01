@@ -7,7 +7,7 @@ package com.mirhoseini.trakttv;
 public class TraktApplicationImpl extends TraktApplication {
 
     @Override
-    void initApplication() {
+    public void initApplication() {
         // Crash report services can be initialized here for release version
     }
 }
