@@ -16,8 +16,8 @@ public class PopularMoviesModule {
 
     @Provides
     @PopularMoviesScope
-    public PopularMoviesViewModel providePresenter(PopularMoviesViewModelImpl presenter) {
-        return presenter;
+    public PopularMoviesViewModel providePresenter(PopularMoviesViewModelImpl viewModel) {
+        return viewModel;
     }
 
 }

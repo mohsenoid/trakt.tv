@@ -58,6 +58,7 @@ public class MainActivity extends BaseActivity implements PopularMoviesFragment.
     Toolbar toolbar;
     @BindView(R.id.search_movies_fragment)
     ViewGroup searchContainer;
+
     AlertDialog internetConnectionDialog;
     private PopularMoviesFragment popularMoviesFragment;
     private SearchMoviesFragment searchMoviesFragment;
